@@ -1,9 +1,7 @@
-SeaMist
+SeaMist .NET library for Kraken.io API
 =============
 
-#.NET library for Kraken.io API
-
-The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface. 
+The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Krakenâ€™s features using a .NET interface. 
 
 * [Getting Started](#getting-started)
 * [Downloading Images](#downloading-images)
@@ -26,7 +24,7 @@ Remember - never link to optimized images offered to download. You have to downl
 
 ## How to use
 
-You can optimize your images by providing the URL of the image you want to optimize. Just keep in mind that the image URL must be accessible for Kraken. The upload option isn’t supported within the current version of SeaMist.
+You can optimize your images by providing the URL of the image you want to optimize. Just keep in mind that the image URL must be accessible for Kraken. The upload option isnâ€™t supported within the current version of SeaMist.
 
 ## Authentication
 
@@ -118,7 +116,7 @@ To recompress your PNG or JPEG files into WebP format simply set `WebP = true` f
 var krakenClient = new KrakenClient(connection);
 
 var request = new OptimizeRequest(
-    new Uri("http://test.com/image.jpg"))
+    new Uri("http://image-url.com/file.jpg"))
     {
         Lossy = true,
         WebP = true
@@ -135,7 +133,7 @@ Image resizing option is great for creating thumbnails or preview images in your
 var krakenClient = new KrakenClient(connection);
 
 var optimizeRequest = new OptimizeWaitRequest(
-    new Uri("http://cdn.devslice.net/blog/wp-content/uploads/2015/04/Microsoft-and-Elasticsearch.png"))
+    new Uri("http://image-url.com/file.jpg"))
     {
         ResizeImage = new ResizeImage
         {
