@@ -1,4 +1,4 @@
-SeaMist .NET library for Kraken.io API
+SeaMist a .NET library for the Kraken.io REST API
 =============
 
 The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface. 
@@ -11,8 +11,8 @@ The SeaMist library interacts with the Kraken.io REST API allowing you to utiliz
   * [Wait Option](#wait-option)
   * [Callback URL](#callback-url)
 * [Lossy Optimization](#lossy-optimization)
-* [Image Resizing](#image-resizing)
 * [WebP Compression](#webp-compression)
+* [Image Resizing](#image-resizing)
 
 ## Getting Started
 
