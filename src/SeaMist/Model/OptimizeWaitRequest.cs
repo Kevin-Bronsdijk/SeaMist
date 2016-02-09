@@ -3,26 +3,26 @@ using Newtonsoft.Json;
 
 namespace SeaMist.Model
 {
-    public class OptimizeRequest : OptimizeRequestBase
+    public class OptimizeWaitRequest : OptimizeRequestBase
     {
-        public OptimizeRequest()
+        public OptimizeWaitRequest()
         {
             Setup();
         }
 
-        public OptimizeRequest(Uri imageUrl, Uri callbackUrl)
+        public OptimizeWaitRequest(Uri imageUrl)
         {
             Setup();
             ImageUrl = imageUrl;
-            CallbackUrl = callbackUrl;
             Authentication = new Authentication();
         }
 
-        [JsonProperty("callback_url")]
-        public Uri CallbackUrl { get; set; }
+        [JsonProperty("wait")]
+        internal bool Wait { get; set; }
 
         private void Setup()
         {
+            Wait = true;
             Lossy = false;
             WebP = false;
         }
