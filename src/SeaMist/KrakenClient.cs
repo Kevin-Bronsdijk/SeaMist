@@ -35,15 +35,30 @@ namespace SeaMist
             return message;
         }
 
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(OptimizeWaitRequest optimizeWaitRequest)
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(IOptimizeRequest optimizeWaitRequest)
         {
             return OptimizeWait(optimizeWaitRequest, default(CancellationToken));
         }
 
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(OptimizeWaitRequest optimizeWaitRequest,
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(IOptimizeRequest optimizeWaitRequest,
             CancellationToken cancellationToken)
         {
             var message = _connection.Execute<OptimizeWaitResult>(new KrakenApiRequest(optimizeWaitRequest), cancellationToken);
+
+            return message;
+        }
+
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(Uri imageUri, IDataStore dataStore)
+        {
+            return OptimizeWait(imageUri, dataStore, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(Uri imageUri, IDataStore dataStore,
+            CancellationToken cancellationToken)
+        {
+            var optimizeRequest = FactoryOptimizeWaitRequest.Create(dataStore.DataStoreName, imageUri, dataStore);
+
+            var message = OptimizeWait(optimizeRequest, cancellationToken);
 
             return message;
         }
