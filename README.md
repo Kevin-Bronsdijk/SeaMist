@@ -104,6 +104,20 @@ response = await client.OptimizeWait(
       "container"
       )
 );
+
+// Azure using OptimizeWaitRequest. Enables all options.
+response = await client.OptimizeWait(new SeaMist.Model.Azure.OptimizeWaitRequest()
+{
+   ImageUrl = new Uri("http://image-url.com/file.jpg"),
+      Lossy = true,
+      BlobStore = new DataStore(
+        "account",
+        "key",
+        "container"
+        )
+}
+);
+
 ```
 ### Amazon S3
 
@@ -204,7 +218,7 @@ The background property can be formatted in HEX notation "#f60" or "#ff6600", RG
 
 ## LICENSE - MIT
 
-Copyright (c) 2015 Kevin Bronsdijk
+Copyright (c) 2016 Kevin Bronsdijk
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
