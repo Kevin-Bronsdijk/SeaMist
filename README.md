@@ -10,6 +10,9 @@ The SeaMist library interacts with the Kraken.io REST API allowing you to utiliz
 * [Wait and Callback URL](#wait-and-callback-url)
   * [Wait Option](#wait-option)
   * [Callback URL](#callback-url)
+* [External Storage](#external-storage)
+  * [Azure Blob](#azure-blob)
+  * [Amazon S3](#amazon-s3)
 * [Lossy Optimization](#lossy-optimization)
 * [WebP Compression](#webp-compression)
 * [Image Resizing](#image-resizing)
@@ -80,6 +83,47 @@ var response = await krakenClient.Optimize(
     "kraked_url": "http://dl.kraken.io/18fede37617a787649c3f60b9f1f280d/file.jpg"
 }
 ````
+
+## External Storage
+SeaMist supports the option which allows you to store optimized images directly in your Microsoft Azure Blob Storage or S3 bucket. With just a few additional parameters your optimized images will be pushed to Microsoft Azure or S3.
+
+### Azure Blob
+
+**Request Azure Blob Storage:**
+
+```C#
+using SeaMist.Model.Azure;
+
+var krakenClient = new KrakenClient(connection);
+
+response = await client.OptimizeWait(
+   new Uri("http://image-url.com/file.jpg"),
+   new DataStore(
+      "account",
+      "key ",
+      "container"
+      )
+);
+```
+### Amazon S3
+
+**Request Amazon S3 bucket:**
+
+```C#
+using SeaMist.Model.S3;
+
+var krakenClient = new KrakenClient(connection);
+
+response = await client.OptimizeWait(
+   new Uri("http://image-url.com/file.jpg"),
+   new DataStore(
+      "key",
+      "secret",
+      "bucket",
+      "region"
+      )
+);
+```
 
 ## Lossy Optimization
 
