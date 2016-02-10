@@ -14,7 +14,6 @@ namespace SeaMist.Model
         {
             Setup();
             ImageUrl = imageUrl;
-            Authentication = new Authentication();
         }
 
         [JsonProperty("wait")]
@@ -22,6 +21,7 @@ namespace SeaMist.Model
 
         private void Setup()
         {
+            Authentication = new Authentication();
             Wait = true;
             Lossy = false;
             WebP = false;
