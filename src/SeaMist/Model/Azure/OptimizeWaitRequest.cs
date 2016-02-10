@@ -3,32 +3,18 @@ using Newtonsoft.Json;
 
 namespace SeaMist.Model.Azure
 {
-    public class OptimizeWaitRequest : OptimizeRequestBase
+    public class OptimizeWaitRequest : Model.OptimizeWaitRequest
     {
-        public OptimizeWaitRequest()
+        public OptimizeWaitRequest() : base()
         {
-            Setup();
         }
 
-        public OptimizeWaitRequest(Uri imageUrl, IDataStore dataStore)
+        public OptimizeWaitRequest(Uri imageUrl, IDataStore dataStore) : base(imageUrl)
         {
-            Setup();
-            ImageUrl = imageUrl;
             BlobStore = dataStore;
-            Authentication = new Authentication();
         }
 
         [JsonProperty("azure_store")]
         public IDataStore BlobStore { get; set; }
-
-        [JsonProperty("wait")]
-        internal bool Wait { get; set; }
-
-        private void Setup()
-        {
-            Wait = true;
-            Lossy = false;
-            WebP = false;
-        }
     }
 }
