@@ -1,7 +1,7 @@
 SeaMist a .NET library for the Kraken.io REST API
 =============
 
-The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface. 
+The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface. Latest [blog post](http://devslice.net/2016/02/seamist-update-external-storage/) covering SeaMist updates.
 
 * [Getting Started](#getting-started)
 * [Downloading Images](#downloading-images)
@@ -218,7 +218,7 @@ The background property can be formatted in HEX notation "#f60" or "#ff6600", RG
 
 ## LICENSE - MIT
 
-Copyright (c) 2016 Kevin Bronsdijk
+Copyright (c) 2016 Kevin Bronsdijk - http://devslice.net/
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
