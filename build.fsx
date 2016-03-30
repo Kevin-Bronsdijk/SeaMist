@@ -1,34 +1,70 @@
-// include Fake lib
-
+// --------------------------------------------------------------------------------------
+// FAKE build script 
+// --------------------------------------------------------------------------------------
 
 #r @"tools\FAKE\tools\FakeLib.dll"
-
 open Fake
+open Fake.AssemblyInfoFile
 
+// --------------------------------------------------------------------------------------
+// Information about the project to be used at NuGet and in AssemblyInfo files
+// --------------------------------------------------------------------------------------
 
+let project = "SeaMist"
+let authors = ["Kevin Bronsdijk"]
+let summary = "A client SDK for Kraken.io."
+let version = "0.1.1.2"
+let description = """
+The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface.
+"""
+let notes = "This release includes External Storage support and several bug fixes. For more information and documentation, please visit the project site on GitHub."
+let nugetVersion = "1.1.2"
+let tags = "kraken.io C# API image optimization"
+let gitHome = "https://github.com/Kevin-Bronsdijk"
+let gitName = "SeaMist"
 
-// Properties
+// --------------------------------------------------------------------------------------
+// Build script 
+// --------------------------------------------------------------------------------------
+
 let buildDir = "./output/"
 
-// Targets
+// --------------------------------------------------------------------------------------
+
 Target "Clean" (fun _ ->
  CleanDir buildDir
 )
 
-Target "BuildApp" (fun _ ->
+// --------------------------------------------------------------------------------------
+
+Target "AssemblyInfo" (fun _ ->
+    let attributes =
+        [ 
+            Attribute.Title project
+            Attribute.Product project
+            Attribute.Description summary
+            Attribute.Version version
+            Attribute.FileVersion version
+        ]
+
+    CreateCSharpAssemblyInfo "src/SeaMist/Properties/AssemblyInfo.cs" attributes
+)
+
+// --------------------------------------------------------------------------------------
+
+Target "Build" (fun _ ->
  !! "src/*.sln"
  |> MSBuildRelease buildDir "Build"
  |> Log "AppBuild-Output: "
 )
 
-Target "Default" (fun _ ->
- trace "SeaMist Build started"
-)
+// --------------------------------------------------------------------------------------
 
-// Dependencies
+Target "All" DoNothing
+
 "Clean"
-  ==> "BuildApp"
-  ==> "Default"
+  ==> "AssemblyInfo"
+  ==> "Build"
+  ==> "All"
 
-// start build
-RunTargetOrDefault "Default"
+RunTargetOrDefault "All"
