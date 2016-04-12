@@ -13,12 +13,12 @@ open Fake.AssemblyInfoFile
 let project = "SeaMist"
 let authors = ["Kevin Bronsdijk"]
 let summary = "A client SDK for Kraken.io."
-let version = "0.1.1.2"
+let version = "0.1.1.3"
 let description = """
 The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface.
 """
-let notes = "This release includes External Storage support and several bug fixes. For more information and documentation, please visit the project site on GitHub."
-let nugetVersion = "1.1.2"
+let notes = "Added API Sandbox support. For more information and documentation, please visit the project site on GitHub."
+let nugetVersion = "1.1.3"
 let tags = "kraken.io C# API image optimization"
 let gitHome = "https://github.com/Kevin-Bronsdijk"
 let gitName = "SeaMist"
