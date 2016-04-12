@@ -16,6 +16,7 @@ The SeaMist library interacts with the Kraken.io REST API allowing you to utiliz
 * [Lossy Optimization](#lossy-optimization)
 * [WebP Compression](#webp-compression)
 * [Image Resizing](#image-resizing)
+* [API Sandbox](#api-sandbox)
 
 ## Getting Started
 
@@ -215,6 +216,14 @@ The `strategy` property can have one of the following values:
 - `square` - This strategy will first crop the image by its shorter dimension to make it a square, then resize it to the specified size.
 - `fill` - This strategy allows you to resize the image to fit the specified bounds while preserving the aspect ratio (just like auto strategy). The optional background property allows you to specify a color which will be used to fill the unused portions of the previously specified bounds.
 The background property can be formatted in HEX notation "#f60" or "#ff6600", RGB "rgb(255, 0, 0)" or RGBA "rgba(91, 126, 156, 0.7)". The default background color is white. Example usage of fill strategy:
+
+## API Sandbox
+
+The Kraken.io API Sandbox is designed to allow you to take all the time you need to integrate with the Kraken.io. Kraken.io endpoints will parse your request, validate your JSON, process uploads, etc. Everything will reflect production usage on a fully-featured Kraken API plan apart from the actual optimization process itself. Instead Kraken API will return randomized optimization results. 
+
+```C#
+ var connection = KrakenConnection.Create("key", "secret", true);
+```
 
 ## LICENSE - MIT
 
