@@ -12,6 +12,9 @@ namespace SeaMist
 
         public KrakenClient(KrakenConnection connection)
         {
+            if (connection == null)
+                throw new ArgumentNullException("connection");
+
             _connection = connection;
         }
 

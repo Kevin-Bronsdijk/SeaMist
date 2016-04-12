@@ -21,16 +21,20 @@ namespace SeaMist.Http
         private HttpClient _client;
         private JsonMediaTypeFormatter _formatter;
 
-        internal KrakenConnection(string apiKey, string apiSecret, HttpMessageHandler handler)
+        internal KrakenConnection(string apiKey, string apiSecret, HttpMessageHandler handler, bool sandboxMode)
         {
             _client = new HttpClient(handler) {BaseAddress = _krakenApiUrl};
             _client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+            SandboxMode = sandboxMode;
 
             ConfigureSerialization();
 
             _apiKey = apiKey;
             _apiSecret = apiSecret;
         }
+
+        public bool SandboxMode { get; private set; }
 
         public void Dispose()
         {
@@ -53,8 +57,20 @@ namespace SeaMist.Http
 
         public static KrakenConnection Create(string apiKey, string apiSecret, IWebProxy proxy = null)
         {
+            ApiHelper.ThrowIfNullOrEmpty(apiKey, "apiKey");
+            ApiHelper.ThrowIfNullOrEmpty(apiSecret, "apiSecret");
+
             var handler = new HttpClientHandler {Proxy = proxy};
-            return new KrakenConnection(apiKey, apiSecret, handler);
+            return new KrakenConnection(apiKey, apiSecret, handler, false);
+        }
+
+        public static KrakenConnection Create(string apiKey, string apiSecret, bool sandboxMode, IWebProxy proxy = null) 
+        {
+            ApiHelper.ThrowIfNullOrEmpty(apiKey, "apiKey");
+            ApiHelper.ThrowIfNullOrEmpty(apiSecret, "apiSecret");
+
+            var handler = new HttpClientHandler { Proxy = proxy };
+            return new KrakenConnection(apiKey, apiSecret, handler, sandboxMode);
         }
 
         internal async Task<IApiResponse<TResponse>> Execute<TResponse>(KrakenApiRequest krakenApiRequest,
@@ -62,6 +78,7 @@ namespace SeaMist.Http
         {
             krakenApiRequest.Body.Authentication.ApiKey = _apiKey;
             krakenApiRequest.Body.Authentication.ApiSecret = _apiSecret;
+            krakenApiRequest.Body.Dev = SandboxMode;
 
              using (var requestMessage = new HttpRequestMessage(krakenApiRequest.Method, krakenApiRequest.Uri))
              {

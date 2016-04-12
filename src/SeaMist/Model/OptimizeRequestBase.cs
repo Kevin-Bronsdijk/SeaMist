@@ -22,5 +22,8 @@ namespace SeaMist.Model
 
         [JsonProperty("auth")]
         public Authentication Authentication { get; set; }
+
+        [JsonProperty("dev")]
+        public bool Dev { get; set; }
     }
 }

@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Http\ApiHelper.cs" />
     <Compile Include="Model\Authentication.cs" />
     <Compile Include="Http\IApiResponse.cs" />
     <Compile Include="Model\Azure\OptimizeWaitRequest.cs" />

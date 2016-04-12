@@ -10,6 +10,12 @@ namespace SeaMist.Model
             BackgroundColor = "#ffffff";
         }
 
+        public ConvertImage(ImageFormat format)
+        {
+            Format = format;
+            BackgroundColor = "#ffffff";
+        }
+
         [JsonProperty("format")]
         [JsonConverter(typeof (StringEnumConverter))]
         public ImageFormat Format { get; set; }
