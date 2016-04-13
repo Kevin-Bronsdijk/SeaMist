@@ -71,10 +71,13 @@
     <Compile Include="Model\OptimizeResult.cs" />
     <Compile Include="Model\OptimizeRequest.cs" />
     <Compile Include="Model\OptimizeWaitResult.cs" />
+    <Compile Include="Model\ResellerAccountRequest.cs" />
+    <Compile Include="Model\ResellerAccountResult.cs" />
     <Compile Include="Model\ResizeImage.cs" />
     <Compile Include="Model\S3\DataStore.cs" />
     <Compile Include="Model\S3\OptimizeWaitRequest.cs" />
     <Compile Include="Model\Strategy.cs" />
+    <Compile Include="Model\SubAccount.cs" />
     <Compile Include="Model\UserRequest.cs" />
     <Compile Include="Model\UserResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

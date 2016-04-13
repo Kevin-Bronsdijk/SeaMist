@@ -24,6 +24,20 @@ namespace SeaMist
             GC.SuppressFinalize(this);
         }
 
+        public Task<IApiResponse<ResellerAccountResult>> ResellerAccount()
+        {
+            return ResellerAccount(default(CancellationToken));
+        }
+
+        public Task<IApiResponse<ResellerAccountResult>> ResellerAccount(CancellationToken cancellationToken)
+        {
+            var userRequest = new ResellerAccountRequest();
+
+            var message = _connection.Execute<ResellerAccountResult>(new KrakenApiRequest(userRequest, "v1/subaccounts"), cancellationToken);
+
+            return message;
+        }
+
         public Task<IApiResponse<UserResult>> UserStatus()
         {
             return UserStatus(default(CancellationToken));

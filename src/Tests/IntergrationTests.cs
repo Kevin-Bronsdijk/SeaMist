@@ -58,6 +58,19 @@ namespace Tests
         }
 
         [TestMethod]
+        public void KrakenClient_ResellerAccountRequest_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var response = krakenClient.ResellerAccount();
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success == true);
+        }
+
+        [TestMethod]
         public void KrakenClient_InvalidResource404_IsTrue()
         { 
             var krakenClient = HelperFunctions.CreateWorkingClient();
@@ -169,7 +182,38 @@ namespace Tests
 
         // Todo:
         // ResizeImage = new ResizeImage() { Height = 100, Width = 100}
-        // Callback
+
+        [TestMethod]
+        public void KrakenClient_OptimizeRequestNoWait_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var request = new OptimizeRequest(new Uri(TestData.ImageOne), new Uri("http://requestb.in/yfxmpzyf"));
+
+            var response = krakenClient.Optimize(request);
+            var result = response.Result;
+
+            Assert.IsTrue(result.Body != null);
+
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+        }
+
+        [TestMethod]
+        public void KrakenClient_OptimizeRequestNoWaitSandbox_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient(true);
+
+            var request = new OptimizeRequest(new Uri(TestData.ImageOne), new Uri("http://requestb.in/yfxmpzyf"));
+
+            var response = krakenClient.Optimize(request);
+            var result = response.Result;
+
+            Assert.IsTrue(result.Body != null);
+
+            Assert.IsTrue(result.Body.Id == null);
+        }
+
+        // Todo:
         // Preserve meta
         // External storage
     }
