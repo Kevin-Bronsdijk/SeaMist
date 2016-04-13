@@ -1,8 +1,6 @@
 namespace SeaMist.Model
 {
-    public interface IOptimizeRequest
+    public interface IOptimizeRequest : IRequest
     {
-        Authentication Authentication { get; set; }
-        bool Dev { get; set; }
     }
 }

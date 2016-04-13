@@ -39,6 +39,25 @@ namespace Tests
         }
 
         [TestMethod]
+        public void KrakenClient_GetUserStatus_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var response = krakenClient.UserStatus();
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success == true);
+
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.PlanName));
+            Assert.IsTrue(result.Body.Active == true || result.Body.Active == false);
+            Assert.IsTrue(result.Body.QuotaTotal > -0);
+            Assert.IsTrue(result.Body.QuotaUsed > -0);
+            Assert.IsTrue(result.Body.QuotaRemaining > -999999);
+        }
+
+        [TestMethod]
         public void KrakenClient_InvalidResource404_IsTrue()
         { 
             var krakenClient = HelperFunctions.CreateWorkingClient();
@@ -98,6 +117,8 @@ namespace Tests
 
             var result = response.Result;
 
+            Assert.IsTrue(result.Body != null);
+
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.FileName));
             Assert.IsTrue(result.Body.KrakedSize > 0);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
@@ -117,6 +138,8 @@ namespace Tests
 
             var response = krakenClient.OptimizeWait(request);
             var result = response.Result;
+
+            Assert.IsTrue(result.Body != null);
 
             // Can only check if we have data, cant check if lossy has been applied
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.FileName));
@@ -139,6 +162,8 @@ namespace Tests
             var response = krakenClient.OptimizeWait(request);
             var result = response.Result;
 
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
             Assert.IsTrue(result.Body.KrakedUrl.EndsWith(".gif"));
         }
 

@@ -6,7 +6,7 @@ namespace SeaMist.Http
     internal interface IApiRequest
     {
         string Uri { get; set; }
-        IOptimizeRequest Body { get; set; }
+        IRequest Body { get; set; }
         HttpMethod Method { get; set; }
     }
 }

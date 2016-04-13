@@ -4,7 +4,7 @@ namespace SeaMist.Model
 {
     static class FactoryOptimizeWaitRequest
     {
-        public static IOptimizeRequest Create(string type, Uri imageUrl, IDataStore dataStore)
+        public static OptimizeWaitRequest Create(string type, Uri imageUrl, IDataStore dataStore)
         {
             switch (type)
             {

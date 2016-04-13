@@ -17,7 +17,7 @@ namespace SeaMist.Http
     {
         private readonly string _apiKey;
         private readonly string _apiSecret;
-        private readonly Uri _krakenApiUrl = new Uri("https://api.kraken.io/v1/");
+        private readonly Uri _krakenApiUrl = new Uri("https://api.kraken.io/");
         private HttpClient _client;
         private JsonMediaTypeFormatter _formatter;
 
