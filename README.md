@@ -15,8 +15,12 @@ The SeaMist library interacts with the Kraken.io REST API allowing you to utiliz
   * [Amazon S3](#amazon-s3)
 * [Lossy Optimization](#lossy-optimization)
 * [WebP Compression](#webp-compression)
+* [Preserving Metadata](#preserving-metadata)
 * [Image Resizing](#image-resizing)
 * [API Sandbox](#api-sandbox)
+* [Reseller Account](#reseller-account)
+* [Account Status](#account-status)
+
 
 ## Getting Started
 
@@ -184,6 +188,26 @@ var request = new OptimizeRequest(
 var response = await krakenClient.OptimizeWait(request);
 ```
 
+
+## Preserving Metadata
+
+By default Kraken API will strip all the metadata found in an image to make the image file as small as it is possible, and in both lossy and lossless modes. Entries like EXIF, XMP and IPTC tags, colour profile information, etc. will be stripped altogether.
+
+However there are situations when you might want to preserve some of the meta information contained in the image, for example, copyright notice or geotags. In order to preserve the most important meta entries add an additional PreserveMeta array to your request with one or more of the following values:
+`Date` `Copyright` `Geotag` `Orientation` `Profile`
+
+```C#
+var krakenClient = new KrakenClient(connection);
+
+var optimizeRequest = new OptimizeWaitRequest(
+    new Uri("http://image-url.com/file.jpg"))
+    {
+       PreserveMeta = new PreserveMeta[] { PreserveMeta.Geotag }
+    };
+
+var response = await krakenClient.OptimizeWait(request);
+```
+        
 ## Image Resizing
 
 Image resizing option is great for creating thumbnails or preview images in your applications. Kraken will first resize the given image and then optimize it with its vast array of optimization algorithms. The `resize` option needs a few parameters to be passed like desired `width` and/or `height` and a mandatory `strategy` property. For example:
@@ -223,6 +247,25 @@ The Kraken.io API Sandbox is designed to allow you to take all the time you need
 
 ```C#
  var connection = KrakenConnection.Create("key", "secret", true);
+```
+
+## Reseller Account
+
+Kraken.io Premium and Enterprise plans are Reseller enabled. If you would like to be a reseller, or provision your customers with Kraken API credentials which you can control the price of, our Reseller Account is perfect for you.
+
+```C#
+var krakenClient = new KrakenClient(connection);
+
+var response = await krakenClient.ResellerAccount();
+```
+## Account Status
+
+Kraken.io allows you to programatically query your account status, enabling you to retrieve details such as the name of the plan you have subscribed to, your total quota, used quota, remaining quota, and the "active" status of your account.
+
+```C#
+var krakenClient = new KrakenClient(connection);
+
+var response = await krakenClient.UserStatus();
 ```
 
 ## LICENSE - MIT
