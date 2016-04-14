@@ -23,6 +23,9 @@ namespace SeaMist.Model
         [JsonProperty("auth")]
         public Authentication Authentication { get; set; }
 
+        [JsonProperty("preserve_meta")]
+        public PreserveMeta[] PreserveMeta { get; set; }
+
         [JsonProperty("dev")]
         public bool Dev { get; set; }
     }

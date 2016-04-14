@@ -4,6 +4,8 @@ using SeaMist;
 using SeaMist.Http;
 using System.Net;
 using SeaMist.Model;
+using ExifLib;
+using System.Drawing;
 
 namespace Tests
 {
@@ -57,6 +59,9 @@ namespace Tests
             Assert.IsTrue(result.Body.QuotaRemaining > -999999);
         }
 
+        /// <summary>
+        /// Must be a Reseller to run this test
+        /// </summary>
         [TestMethod]
         public void KrakenClient_ResellerAccountRequest_IsTrue()
         {
@@ -180,8 +185,28 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.EndsWith(".gif"));
         }
 
-        // Todo:
-        // ResizeImage = new ResizeImage() { Height = 100, Width = 100}
+        [TestMethod]
+        public void KrakenClient_CustomRequestChangeSize_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var request = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
+            {
+                ResizeImage = new ResizeImage() { Height = 100, Width = 100 }
+            };
+
+            var response = krakenClient.OptimizeWait(request);
+            var result = response.Result;
+
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+
+            var localFile = HelperFunctions.DownloadImage(result.Body.KrakedUrl);
+
+            Image img = Image.FromFile(localFile);
+            Assert.IsTrue(img.Height == 100);
+            Assert.IsTrue(img.Width == 100);
+        }
 
         [TestMethod]
         public void KrakenClient_OptimizeRequestNoWait_IsTrue()
@@ -213,8 +238,80 @@ namespace Tests
             Assert.IsTrue(result.Body.Id == null);
         }
 
+        [TestMethod]
+        public void KrakenClient_CustomRequestRemoveGeoData_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var request = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag));
+   
+            var response = krakenClient.OptimizeWait(request);
+            var result = response.Result;
+
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+
+            var localFile = HelperFunctions.DownloadImage(result.Body.KrakedUrl);
+
+            try
+            {
+                using (ExifReader reader = new ExifReader(localFile))
+                {
+                }
+
+                Assert.IsTrue(false, "No Exception");
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(true, "No Exif data");
+            }
+        }
+
+        [TestMethod]
+        public void KrakenClient_CustomRequestKeepGeoData_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var request = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
+            {
+                PreserveMeta = new PreserveMeta[] { PreserveMeta.Geotag }
+            };
+
+            var response = krakenClient.OptimizeWait(request);
+            var result = response.Result;
+
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+
+            var localFile = HelperFunctions.DownloadImage(result.Body.KrakedUrl);
+
+            try
+            {
+                using (ExifReader reader = new ExifReader(localFile))
+                {
+                    Double[] GpsLongArray;
+                    Double[] GpsLatArray;
+                    Double GpsLongDouble = 0;
+                    Double GpsLatDouble = 0;
+
+                    if (reader.GetTagValue<Double[]>(ExifTags.GPSLongitude, out GpsLongArray)
+                        && reader.GetTagValue<Double[]>(ExifTags.GPSLatitude, out GpsLatArray))
+                    {
+                        GpsLongDouble = GpsLongArray[0] + GpsLongArray[1] / 60 + GpsLongArray[2] / 3600;
+                        GpsLatDouble = GpsLatArray[0] + GpsLatArray[1] / 60 + GpsLatArray[2] / 3600;
+                    }
+
+                    Assert.IsTrue(GpsLongDouble == 120.69216155555556);
+                    Assert.IsTrue(GpsLatDouble == 22.037862777777779);
+                }
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(false, "No Exif data");
+            }
+        }
+
         // Todo:
-        // Preserve meta
         // External storage
     }
 }

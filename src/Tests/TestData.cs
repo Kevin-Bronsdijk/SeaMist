@@ -5,5 +5,6 @@ namespace Tests
     {
         public const string ImageOne = "http://devslice.net/wp-content/uploads/2015/07/11803791-cloud-computing-concept-drawn-with-chalk-on-blackboard.png";
         public const string Image404 = "http://devslice.net/im-out-for-lunch.png";
+        public const string ImageGeoTag = "http://www.geoimgr.com/photos/micmic_248bf5f4fe5853421a328fadcccf9204_l.jpg";
     }
 }
