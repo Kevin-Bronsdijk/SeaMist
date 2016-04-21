@@ -18,6 +18,9 @@ namespace SeaMist.Model
             Authentication = new Authentication();
         }
 
+        [JsonProperty("url")]
+        public Uri ImageUrl { get; set; }
+
         [JsonProperty("callback_url")]
         public Uri CallbackUrl { get; set; }
 

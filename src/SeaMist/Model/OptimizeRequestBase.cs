@@ -1,13 +1,9 @@
-using System;
 using Newtonsoft.Json;
 
 namespace SeaMist.Model
 {
     public abstract class OptimizeRequestBase : IOptimizeRequest
     {
-        [JsonProperty("url")]
-        public Uri ImageUrl { get; set; }
-
         [JsonProperty("lossy")]
         public bool Lossy { get; set; }
 

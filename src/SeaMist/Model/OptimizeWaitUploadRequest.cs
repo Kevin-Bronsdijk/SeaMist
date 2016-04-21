@@ -1,23 +1,14 @@
+﻿using Newtonsoft.Json;
 using System;
-using Newtonsoft.Json;
 
 namespace SeaMist.Model
 {
-    public class OptimizeWaitRequest : OptimizeRequestBase
+    public class OptimizeWaitUploadRequest : OptimizeRequestBase
     {
-        public OptimizeWaitRequest()
+        public OptimizeWaitUploadRequest()
         {
             Setup();
         }
-
-        public OptimizeWaitRequest(Uri imageUrl)
-        {
-            Setup();
-            ImageUrl = imageUrl;
-        }
-
-        [JsonProperty("url")]
-        public Uri ImageUrl { get; set; }
 
         [JsonProperty("wait")]
         internal bool Wait { get; set; }
@@ -30,4 +21,5 @@ namespace SeaMist.Model
             WebP = false;
         }
     }
+
 }

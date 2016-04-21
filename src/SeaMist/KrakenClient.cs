@@ -92,6 +92,21 @@ namespace SeaMist
             return message;
         }
 
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(byte[] image, string filename)
+        {
+            return OptimizeWait(image, filename, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(byte[] image, string filename, CancellationToken cancellationToken)
+        {
+            var optimizeRequest = new OptimizeWaitUploadRequest();
+
+            var message = _connection.ExecuteUpload<OptimizeWaitResult>(new KrakenApiRequest(optimizeRequest, "v1/upload"),
+                image, filename, cancellationToken);
+
+            return message;
+        }
+
         public Task<IApiResponse<OptimizeResult>> Optimize(Uri imageUri, Uri callbackUrl)
         {
             return Optimize(imageUri, callbackUrl, default(CancellationToken));
@@ -115,6 +130,21 @@ namespace SeaMist
         {
             var message = _connection.Execute<OptimizeResult>(new KrakenApiRequest(optimizeRequest, "v1/url"),
                 cancellationToken);
+
+            return message;
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename, Uri callbackUrl)
+        {
+            return Optimize(image, filename, callbackUrl, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename, Uri callbackUrl, CancellationToken cancellationToken)
+        {
+            var optimizeRequest = new OptimizeUploadRequest(callbackUrl);
+
+            var message = _connection.ExecuteUpload<OptimizeResult>(new KrakenApiRequest(optimizeRequest, "v1/upload"),
+                image, filename, cancellationToken);
 
             return message;
         }

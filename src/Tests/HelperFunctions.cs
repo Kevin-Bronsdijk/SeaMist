@@ -18,6 +18,7 @@ namespace Tests
 
         public static string DownloadImage(string fileLocation)
         {    
+            // Todo: enable using of all types
             string fileName = Path.GetTempPath() + Guid.NewGuid().ToString() + ".jpg";
    
             using (WebClient client = new WebClient())

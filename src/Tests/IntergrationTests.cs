@@ -6,10 +6,12 @@ using System.Net;
 using SeaMist.Model;
 using ExifLib;
 using System.Drawing;
+using System.IO;
 
 namespace Tests
 {
     [TestClass]
+    [DeploymentItem("Images")]
     public class IntergrationTests
     {
         [TestMethod]
@@ -86,7 +88,6 @@ namespace Tests
             var result = response.Result;
 
             Assert.IsTrue((int)result.StatusCode == 422);
-
             Assert.IsTrue(result.Success == false);
         }
 
@@ -121,7 +122,6 @@ namespace Tests
             var result = response.Result;
 
             Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
-
             Assert.IsTrue(result.Success == true);
         }
 
@@ -219,7 +219,6 @@ namespace Tests
             var result = response.Result;
 
             Assert.IsTrue(result.Body != null);
-
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
@@ -234,7 +233,6 @@ namespace Tests
             var result = response.Result;
 
             Assert.IsTrue(result.Body != null);
-
             Assert.IsTrue(result.Body.Id == null);
         }
 
@@ -301,8 +299,8 @@ namespace Tests
                         GpsLatDouble = GpsLatArray[0] + GpsLatArray[1] / 60 + GpsLatArray[2] / 3600;
                     }
 
-                    Assert.IsTrue(GpsLongDouble == 120.69216155555556);
-                    Assert.IsTrue(GpsLatDouble == 22.037862777777779);
+                    Assert.IsTrue(GpsLongDouble == 120.7602005);
+                    Assert.IsTrue(GpsLatDouble == 21.958606694444445);
                 }
             }
             catch (Exception)
@@ -311,7 +309,45 @@ namespace Tests
             }
         }
 
+        [TestMethod]
+        public void KrakenClient_UploadImageWaitResult_IsTrue()
+        {
+            var testImageName = "test.png";
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+            var image = File.ReadAllBytes("Kraken.png"); // Read deployed file
+            var task = krakenClient.OptimizeWait(image, testImageName);
+
+            var result = task.Result;
+
+            Assert.IsTrue(result.Success == true);
+            Assert.IsTrue(result.Body != null);
+
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.FileName));
+            Assert.IsTrue(result.Body.FileName == testImageName);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+            Assert.IsTrue(result.Body.KrakedUrl.EndsWith(testImageName));
+            Assert.IsTrue(result.Body.KrakedSize > 0);
+            Assert.IsTrue(result.Body.OriginalSize > 0);
+            Assert.IsTrue(result.Body.SavedBytes > 0);
+        }
+
+        [TestMethod]
+        public void KrakenClient_UploadImageCallback_IsTrue()
+        {
+            var testImageName = "test.png";
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+            var image = File.ReadAllBytes("Kraken.png"); // Read deployed file
+            var task = krakenClient.Optimize(image, testImageName, new Uri("http://requestb.in/q6wvgsq6"));
+
+            var result = task.Result;
+
+            Assert.IsTrue(result.Success == true);
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+        }
+
         // Todo:
-        // External storage
+        // External storage + Wait and Callback
+        // Upload and External storage Wait + Callback
     }
 }

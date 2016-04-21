@@ -10,6 +10,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using SeaMist.Model;
+using System.Globalization;
+using System.IO;
 
 namespace SeaMist.Http
 {
@@ -90,6 +92,32 @@ namespace SeaMist.Http
                      return await BuildResponse<TResponse>(responseMessage, cancellationToken).ConfigureAwait(false);
                  }
              }
+        }
+
+        internal async Task<IApiResponse<TResponse>> ExecuteUpload<TResponse>(
+            KrakenApiRequest krakenApiRequest, byte[] image, string filename, CancellationToken cancellationToken)
+        {
+            ApiHelper.ThrowIfNullOrEmpty(filename, "filename");
+
+            krakenApiRequest.Body.Authentication.ApiKey = _apiKey;
+            krakenApiRequest.Body.Authentication.ApiSecret = _apiSecret;
+            krakenApiRequest.Body.Dev = SandboxMode;
+
+            using (var content = new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture)))
+            {
+                var body = new ObjectContent(krakenApiRequest.Body.GetType(),
+                    krakenApiRequest.Body, _formatter, new MediaTypeHeaderValue("application/json"));
+
+                content.Add(body);
+                content.Add(new StreamContent(new MemoryStream(image)), filename, filename);
+
+                using (var responseMessage = await _client.PostAsync(_krakenApiUrl + krakenApiRequest.Uri, content))
+                {
+                    var test = await responseMessage.Content.ReadAsStringAsync();
+
+                    return await BuildResponse<TResponse>(responseMessage, cancellationToken).ConfigureAwait(false);
+                }
+            }
         }
 
         private async Task<IApiResponse<TResponse>> BuildResponse<TResponse>(HttpResponseMessage message, CancellationToken cancellationToken)

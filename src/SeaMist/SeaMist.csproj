@@ -54,6 +54,9 @@
     <Compile Include="Http\IApiResponse.cs" />
     <Compile Include="Model\Azure\OptimizeWaitRequest.cs" />
     <Compile Include="Model\Azure\DataStore.cs" />
+    <Compile Include="Model\OptimizeUploadRequest.cs" />
+    <Compile Include="Model\OptimizeWaitUploadRequest.cs" />
+    <Compile Include="Model\PreserveMeta.cs" />
     <Compile Include="Model\FactoryOptimizeWaitRequest.cs" />
     <Compile Include="Model\ConvertImage.cs" />
     <Compile Include="Model\IDataStore.cs" />
