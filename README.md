@@ -63,7 +63,9 @@ var krakenClient = new KrakenClient(connection);
 
 var image = File.ReadAllBytes("your-image-location-on-disk.png"); 
 
-var response = await = krakenClient.Optimize(image, "test.png", new Uri("http://awesome-website.com/kraken_results"));
+var response = await krakenClient.Optimize(image, 
+                                           "test.png", 
+                                           new Uri("http://awesome-website.com/kraken_results"));
 ```
 
 ## Wait and Callback URL
