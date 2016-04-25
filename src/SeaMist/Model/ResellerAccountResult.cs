@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace SeaMist.Model
 {
@@ -7,6 +7,7 @@ namespace SeaMist.Model
     {
         [JsonProperty("success")]
         public bool Success { get; set; }
+
         [JsonProperty("subaccounts")]
         public List<SubAccount> SubAccounts { get; set; }
     }

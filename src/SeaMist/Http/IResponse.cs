@@ -6,5 +6,6 @@ namespace SeaMist.Http
     {
         bool Success { get; }
         HttpStatusCode StatusCode { get; }
+        string Error { get;  }
     }
 }

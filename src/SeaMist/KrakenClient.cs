@@ -33,7 +33,8 @@ namespace SeaMist
         {
             var userRequest = new ResellerAccountRequest();
 
-            var message = _connection.Execute<ResellerAccountResult>(new KrakenApiRequest(userRequest, "v1/subaccounts"), cancellationToken);
+            var message = _connection.Execute<ResellerAccountResult>(
+                new KrakenApiRequest(userRequest, "v1/subaccounts"), cancellationToken);
 
             return message;
         }
@@ -47,7 +48,8 @@ namespace SeaMist
         {
             var userRequest = new UserRequest();
 
-            var message = _connection.Execute<UserResult>(new KrakenApiRequest(userRequest, "user_status"), cancellationToken);
+            var message = _connection.Execute<UserResult>(new KrakenApiRequest(userRequest, "user_status"),
+                cancellationToken);
 
             return message;
         }
@@ -66,53 +68,13 @@ namespace SeaMist
             return message;
         }
 
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(OptimizeWaitRequest optimizeWaitRequest)
-        {
-            return OptimizeWait(optimizeWaitRequest, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(OptimizeWaitRequest optimizeWaitRequest, CancellationToken cancellationToken)
-        {
-            var message = _connection.Execute<OptimizeWaitResult>(new KrakenApiRequest(optimizeWaitRequest, "v1/url"), cancellationToken);
-
-            return message;
-        }
-
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(Uri imageUri, IDataStore dataStore)
-        {
-            return OptimizeWait(imageUri, dataStore, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(Uri imageUri, IDataStore dataStore, CancellationToken cancellationToken)
-        {
-            var optimizeRequest = FactoryOptimizeWaitRequest.Create(dataStore.DataStoreName, imageUri, dataStore);
-
-            var message = OptimizeWait(optimizeRequest, cancellationToken);
-
-            return message;
-        }
-
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(byte[] image, string filename)
-        {
-            return OptimizeWait(image, filename, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(byte[] image, string filename, CancellationToken cancellationToken)
-        {
-            var optimizeRequest = new OptimizeWaitUploadRequest();
-
-            var message = _connection.ExecuteUpload<OptimizeWaitResult>(new KrakenApiRequest(optimizeRequest, "v1/upload"),
-                image, filename, cancellationToken);
-
-            return message;
-        }
-
         public Task<IApiResponse<OptimizeResult>> Optimize(Uri imageUri, Uri callbackUrl)
         {
             return Optimize(imageUri, callbackUrl, default(CancellationToken));
         }
 
-        public Task<IApiResponse<OptimizeResult>> Optimize(Uri imageUri, Uri callbackUrl, CancellationToken cancellationToken)
+        public Task<IApiResponse<OptimizeResult>> Optimize(Uri imageUri, Uri callbackUrl,
+            CancellationToken cancellationToken)
         {
             var optimize = new OptimizeRequest(imageUri, callbackUrl);
 
@@ -121,12 +83,62 @@ namespace SeaMist
             return message;
         }
 
-        public Task<IApiResponse<OptimizeResult>> Optimize(OptimizeRequest optimizeRequest)
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(byte[] image, string filename,
+            IOptimizeUploadWaitRequest optimizeWaitRequest)
+        {
+            return OptimizeWait(image, filename, optimizeWaitRequest, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(byte[] image, string filename,
+            IOptimizeUploadWaitRequest optimizeWaitRequest, CancellationToken cancellationToken)
+        {
+            filename.ThrowIfNullOrEmpty("filename");
+
+            var message =
+                _connection.ExecuteUpload<OptimizeWaitResult>(new KrakenApiRequest(optimizeWaitRequest, "v1/upload"),
+                    image, filename, cancellationToken);
+
+            return message;
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename,
+            IOptimizeUploadRequest optimizeRequest)
+        {
+            return Optimize(image, filename, optimizeRequest, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename,
+            IOptimizeUploadRequest optimizeRequest, CancellationToken cancellationToken)
+        {
+            filename.ThrowIfNullOrEmpty("filename");
+
+            var message = _connection.ExecuteUpload<OptimizeResult>(new KrakenApiRequest(optimizeRequest, "v1/upload"),
+                image, filename, cancellationToken);
+
+            return message;
+        }
+
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(IOptimizeWaitRequest optimizeWaitRequest)
+        {
+            return OptimizeWait(optimizeWaitRequest, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(IOptimizeWaitRequest optimizeWaitRequest,
+            CancellationToken cancellationToken)
+        {
+            var message = _connection.Execute<OptimizeWaitResult>(new KrakenApiRequest(optimizeWaitRequest, "v1/url"),
+                cancellationToken);
+
+            return message;
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(IOptimizeRequest optimizeRequest)
         {
             return Optimize(optimizeRequest, default(CancellationToken));
         }
 
-        public Task<IApiResponse<OptimizeResult>> Optimize(OptimizeRequest optimizeRequest, CancellationToken cancellationToken)
+        public Task<IApiResponse<OptimizeResult>> Optimize(IOptimizeRequest optimizeRequest,
+            CancellationToken cancellationToken)
         {
             var message = _connection.Execute<OptimizeResult>(new KrakenApiRequest(optimizeRequest, "v1/url"),
                 cancellationToken);
@@ -134,17 +146,36 @@ namespace SeaMist
             return message;
         }
 
-        public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename, Uri callbackUrl)
+        [Obsolete("Method is deprecated, please use OptimizeWait(IOptimizeWaitRequest)")]
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(Uri imageUri, IDataStore dataStore)
         {
-            return Optimize(image, filename, callbackUrl, default(CancellationToken));
+            return OptimizeWait(imageUri, dataStore, default(CancellationToken));
         }
 
-        public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename, Uri callbackUrl, CancellationToken cancellationToken)
+        [Obsolete("Method is deprecated, please use OptimizeWait(IOptimizeWaitRequest, CancellationToken)")]
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(Uri imageUri, IDataStore dataStore,
+            CancellationToken cancellationToken)
         {
-            var optimizeRequest = new OptimizeUploadRequest(callbackUrl);
+            var optimizeRequest = FactoryOptimizeWaitRequest.Create(imageUri, dataStore);
 
-            var message = _connection.ExecuteUpload<OptimizeResult>(new KrakenApiRequest(optimizeRequest, "v1/upload"),
-                image, filename, cancellationToken);
+            var message = OptimizeWait(optimizeRequest, cancellationToken);
+
+            return message;
+        }
+
+        [Obsolete("Method is deprecated, please use OptimizeWait(IOptimizeRequest)")]
+        public Task<IApiResponse<OptimizeResult>> Optimize(Uri imageUri, Uri callbackUrl, IDataStore dataStore)
+        {
+            return Optimize(imageUri, callbackUrl, dataStore, default(CancellationToken));
+        }
+
+        [Obsolete("Method is deprecated, please use OptimizeWait(IOptimizeRequest, CancellationToken)")]
+        public Task<IApiResponse<OptimizeResult>> Optimize(Uri imageUri, Uri callbackUrl, IDataStore dataStore,
+            CancellationToken cancellationToken)
+        {
+            var optimizeRequest = FactoryOptimizeRequest.Create(imageUri, callbackUrl, dataStore);
+
+            var message = Optimize(optimizeRequest, cancellationToken);
 
             return message;
         }

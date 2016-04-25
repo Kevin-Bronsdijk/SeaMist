@@ -1,5 +1,4 @@
-﻿
-namespace SeaMist.Model
+﻿namespace SeaMist.Model
 {
     public interface IRequest
     {

@@ -1,8 +1,8 @@
-﻿using SeaMist;
-using SeaMist.Http;
-using System;
-using System.Net;
+﻿using System;
 using System.IO;
+using System.Net;
+using SeaMist;
+using SeaMist.Http;
 
 namespace Tests
 {
@@ -17,16 +17,16 @@ namespace Tests
         }
 
         public static string DownloadImage(string fileLocation)
-        {    
+        {
             // Todo: enable using of all types
-            string fileName = Path.GetTempPath() + Guid.NewGuid().ToString() + ".jpg";
-   
-            using (WebClient client = new WebClient())
+            var fileName = Path.GetTempPath() + Guid.NewGuid() + ".jpg";
+
+            using (var client = new WebClient())
             {
                 client.DownloadFile(fileLocation, fileName);
             }
 
             return fileName;
-        } 
+        }
     }
 }

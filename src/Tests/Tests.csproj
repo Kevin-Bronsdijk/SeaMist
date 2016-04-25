@@ -55,6 +55,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="FakeDataStore.cs" />
     <Compile Include="HelperFunctions.cs" />
     <Compile Include="IntergrationTests.cs" />
     <Compile Include="Settings.cs" />
@@ -78,6 +79,7 @@
     <Content Include="Images\Kraken.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Notes\notes.txt" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

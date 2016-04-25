@@ -1,10 +1,15 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace SeaMist.Model
 {
-    public class OptimizeUploadRequest : OptimizeRequestBase
+    public class OptimizeUploadRequest : OptimizeRequestBase, IOptimizeUploadRequest
     {
+        public OptimizeUploadRequest()
+        {
+            Setup();
+        }
+
         public OptimizeUploadRequest(Uri callbackUrl)
         {
             CallbackUrl = callbackUrl;

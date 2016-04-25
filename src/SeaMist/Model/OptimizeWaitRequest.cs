@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace SeaMist.Model
 {
-    public class OptimizeWaitRequest : OptimizeRequestBase
+    public class OptimizeWaitRequest : OptimizeRequestBase, IOptimizeWaitRequest
     {
         public OptimizeWaitRequest()
         {

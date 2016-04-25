@@ -1,11 +1,10 @@
 ﻿using Newtonsoft.Json;
-using System;
 
 namespace SeaMist.Model
 {
-    public class OptimizeWaitUploadRequest : OptimizeRequestBase
+    public class OptimizeUploadWaitRequest : OptimizeRequestBase, IOptimizeUploadWaitRequest
     {
-        public OptimizeWaitUploadRequest()
+        public OptimizeUploadWaitRequest()
         {
             Setup();
         }
@@ -21,5 +20,4 @@ namespace SeaMist.Model
             WebP = false;
         }
     }
-
 }

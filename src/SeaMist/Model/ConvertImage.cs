@@ -17,7 +17,7 @@ namespace SeaMist.Model
         }
 
         [JsonProperty("format")]
-        [JsonConverter(typeof (StringEnumConverter))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ImageFormat Format { get; set; }
 
         [JsonProperty("background")]

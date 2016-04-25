@@ -2,7 +2,7 @@
 
 namespace SeaMist.Http
 {
-    public static class ApiHelper
+    internal static class ApiHelper
     {
         public static void ThrowIfNullOrEmpty(this string value, string name)
         {

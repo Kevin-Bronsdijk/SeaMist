@@ -8,7 +8,7 @@ namespace SeaMist.Http
         {
         }
 
-        public string Error { get; set; }
+        public string Error { get; internal set; }
         public TResult Body { get; internal set; }
         public bool Success { get; internal set; }
         public HttpStatusCode StatusCode { get; internal set; }

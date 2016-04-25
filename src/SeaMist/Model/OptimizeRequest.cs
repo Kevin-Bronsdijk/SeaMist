@@ -3,13 +3,8 @@ using Newtonsoft.Json;
 
 namespace SeaMist.Model
 {
-    public class OptimizeRequest : OptimizeRequestBase
+    public class OptimizeRequest : OptimizeRequestBase, IOptimizeRequest
     {
-        public OptimizeRequest()
-        {
-            Setup();
-        }
-
         public OptimizeRequest(Uri imageUrl, Uri callbackUrl)
         {
             Setup();

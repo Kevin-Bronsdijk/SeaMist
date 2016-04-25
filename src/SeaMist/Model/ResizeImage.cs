@@ -12,7 +12,7 @@ namespace SeaMist.Model
         public int? Height { get; set; }
 
         [JsonProperty("strategy")]
-        [JsonConverter(typeof (StringEnumConverter))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public Strategy Strategy { get; set; }
 
         [JsonProperty("background")]

@@ -1,0 +1,157 @@
+﻿
+        public static OptimizeUploadWaitRequest Create(IDataStore dataStore)
+        {
+            switch (dataStore.DataStoreName)
+            {
+                case "azure_store":
+                    return new Azure.OptimizeUploadWaitRequest(dataStore);
+                case "s3_store":
+                    return new S3.OptimizeUploadWaitRequest(dataStore);
+                default:
+                    throw new InvalidOperationException(string.Format("Type {0} cannot be instantiated", dataStore.DataStoreName));
+            }
+        }
+
+        public static OptimizeUploadRequest Create(Uri callbackUrl, IDataStore dataStore)
+        {
+            switch (dataStore.DataStoreName)
+            {
+                case "azure_store":
+                    return new Azure.OptimizeUploadRequest(callbackUrl, dataStore);
+                case "s3_store":
+                    return new S3.OptimizeUploadRequest(callbackUrl, dataStore);
+                default:
+                    throw new InvalidOperationException(string.Format("Type {0} cannot be instantiated", dataStore.DataStoreName));
+            }
+        }
+
+
+            KrakenClient_UploadOptimizeWaitAmazon_IsTrue
+
+            //var response = krakenClient.OptimizeWait(
+            //    image,
+            //    testImageName,
+            //    new SeaMist.Model.S3.DataStore(
+            //        Settings.AmazonKey,
+            //        Settings.AmazonSecret,
+            //        Settings.AmazonBucket,
+            //        string.Empty
+            //        )
+            //    );
+
+            KrakenClient_UploadOptimizeWaitAzure_IsTrue
+
+            //var response = krakenClient.OptimizeWait(
+            //    image,
+            //    TestData.TestImageName,
+            //    new SeaMist.Model.Azure.DataStore(
+            //        Settings.AzureAccount,
+            //        Settings.AzureKey,
+            //        Settings.AzureContainer
+            //        )
+            //    );
+
+            KrakenClient_UploadOptimizeCallbackAmazon_IsTrue
+
+            //var response = krakenClient.Optimize(
+            //    image,
+            //    testImageName,
+            //    callbackUri,
+            //    new SeaMist.Model.S3.DataStore(
+            //        Settings.AmazonKey,
+            //        Settings.AmazonSecret,
+            //        Settings.AmazonBucket,
+            //        string.Empty
+            //        )
+            //    );
+
+            KrakenClient_UploadOptimizeCallbackAzure_IsTrue
+
+            //var response = krakenClient.Optimize(
+            //    image,
+            //    testImageName,
+            //    callbackUri,
+            //    new SeaMist.Model.Azure.DataStore(
+            //        Settings.AzureAccount,
+            //        Settings.AzureKey,
+            //        Settings.AzureContainer
+            //        )
+            //    );
+
+        KrakenClient -> Removed 
+
+        //// Remove -> use IOptimizeUploadRequest
+        //public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(byte[] image, string filename)
+        //{
+        //    return OptimizeWait(image, filename, default(CancellationToken));
+        //}
+
+        //// Remove -> use IOptimizeUploadRequest
+        //public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(byte[] image, string filename, CancellationToken cancellationToken)
+        //{
+        //    ApiHelper.ThrowIfNullOrEmpty(filename, "filename");
+
+        //    var optimizeRequest = new OptimizeUploadWaitRequest();
+
+        //    var message = _connection.ExecuteUpload<OptimizeWaitResult>(new KrakenApiRequest(optimizeRequest, "v1/upload"),
+        //        image, filename, cancellationToken);
+
+        //    return message;
+        //}
+
+        //// Remove -> use IOptimizeUploadWaitRequest
+        //public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(byte[] image, string filename, IDataStore dataStore)
+        //{
+        //    return OptimizeWait(image, filename, dataStore, default(CancellationToken));
+        //}
+
+        //// Remove -> use IOptimizeUploadWaitRequest
+        //public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(byte[] image, string filename, IDataStore dataStore, CancellationToken cancellationToken)
+        //{
+        //    ApiHelper.ThrowIfNullOrEmpty(filename, "filename");
+
+        //    var optimizeRequest = FactoryOptimizeWaitRequest.Create(dataStore);
+
+        //    var message = _connection.ExecuteUpload<OptimizeWaitResult>(new KrakenApiRequest(optimizeRequest, "v1/upload"),
+        //        image, filename, cancellationToken);
+
+        //    return message;
+        //}
+
+        // Remove -> use IOptimizeUploadRequest
+        //public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename, Uri callbackUrl)
+        //{
+        //    return Optimize(image, filename, callbackUrl, default(CancellationToken));
+        //}
+
+        // Remove -> use IOptimizeUploadRequest
+        //public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename, Uri callbackUrl, CancellationToken cancellationToken)
+        //{
+        //    ApiHelper.ThrowIfNullOrEmpty(filename, "filename");
+
+        //    var optimizeRequest = new OptimizeUploadRequest(callbackUrl);
+
+        //    var message = _connection.ExecuteUpload<OptimizeResult>(new KrakenApiRequest(optimizeRequest, "v1/upload"),
+        //        image, filename, cancellationToken);
+
+        //    return message;
+        //}
+
+        // Remove -> use IOptimizeUploadRequest
+        //public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename, Uri callbackUrl, IDataStore dataStore)
+        //{
+        //    return Optimize(image, filename, callbackUrl, dataStore, default(CancellationToken));
+        //}
+
+        // Remove -> use IOptimizeUploadRequest
+        //public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename, Uri callbackUrl, IDataStore dataStore, CancellationToken cancellationToken)
+        //{
+        //    ApiHelper.ThrowIfNullOrEmpty(filename, "filename");
+
+        //    var optimizeRequest = FactoryOptimizeRequest.Create(callbackUrl, dataStore);
+
+        //    var message = _connection.ExecuteUpload<OptimizeResult>(new KrakenApiRequest(optimizeRequest, "v1/upload"),
+        //        image, filename, cancellationToken);
+
+        //    return message;
+        //}

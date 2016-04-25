@@ -1,12 +1,9 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace SeaMist.Model.Azure
 {
     public class DataStore : IDataStore
     {
-        private string _path = "/";
-
         public DataStore(string account, string key, string container)
         {
             Account = account;
@@ -14,8 +11,8 @@ namespace SeaMist.Model.Azure
             Container = container;
         }
 
-        public DataStore(string account, string key, string container, string path) : 
-            this (account, key, container)
+        public DataStore(string account, string key, string container, string path) :
+            this(account, key, container)
         {
             Path = path;
         }
@@ -30,25 +27,12 @@ namespace SeaMist.Model.Azure
         public string Container { get; set; }
 
         [JsonProperty("path")]
-        public string Path
-        {
-            get
-            {
-                return _path;
-            }
-            set
-            {
-                _path = value;
-            }
-        }
+        public string Path { get; set; } = "/";
 
         [JsonIgnore]
         public string DataStoreName
         {
-            get
-            {
-                return "azure_store";
-            }
+            get { return "azure_store"; }
         }
     }
 }

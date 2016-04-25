@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SeaMist;
 using SeaMist.Http;
+using SeaMist.Model;
 
 namespace Tests
 {
@@ -117,5 +118,100 @@ namespace Tests
 
             Assert.IsTrue(connection.SandboxMode == false);
         }
+
+        [TestMethod]
+        public void ConnectionCreate_Dispose_IsTrue()
+        {
+            var krakenConnection = KrakenConnection.Create("key", "secret");
+
+            try
+            {
+                krakenConnection.Dispose();
+
+                Assert.IsTrue(true);
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(false, "Exception");
+            }
+        }
+
+        [TestMethod]
+        public void KrakenClient_MustProvideAConnection_IsTrue()
+        {
+            try
+            {
+                var krakenClient = new KrakenClient(null);
+
+                Assert.IsTrue(false, "No exception");
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(true);
+            }
+        }
+
+        [TestMethod]
+        public void KrakenClient_Dispose_IsTrue()
+        {
+            var krakenConnection = KrakenConnection.Create("key", "secret");
+            var krakenClient = new KrakenClient(krakenConnection);
+
+            try
+            {
+                krakenClient.Dispose();
+
+                Assert.IsTrue(true);
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(false, "Exception");
+            }
+        }
+
+        [TestMethod]
+        public void KrakenClient_RequestUploadWaitNoFileNameError_IsTrue()
+        {
+            var krakenConnection = KrakenConnection.Create("key", "secret");
+            var krakenClient = new KrakenClient(krakenConnection);
+
+            try
+            {
+                krakenClient.OptimizeWait(
+                    null,
+                    string.Empty,
+                    new OptimizeUploadWaitRequest()
+                    );
+
+                Assert.IsTrue(false, "No exception");
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(true);
+            }
+        }
+
+        [TestMethod]
+        public void KrakenClient_RequestUploadCallbackNoFileNameError_IsTrue()
+        {
+            var krakenConnection = KrakenConnection.Create("key", "secret");
+            var krakenClient = new KrakenClient(krakenConnection);
+
+            try
+            {
+                krakenClient.Optimize(
+                    null,
+                    string.Empty,
+                    new OptimizeUploadRequest()
+                    );
+
+                Assert.IsTrue(false, "No exception");
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(true);
+            }
+        }
+
     }
 }
