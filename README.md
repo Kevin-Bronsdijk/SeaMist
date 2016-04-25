@@ -178,8 +178,7 @@ var image = File.ReadAllBytes("your-image-location-on-disk.png");
 var response = await krakenClient.OptimizeWait(
     image, 
     "image-name.jpg",
-    new Model.Azure.OptimizeUploadWaitRequest(
-    "account", "key","container")
+    new Model.Azure.OptimizeUploadWaitRequest("account", "key","container")
     {
         ResizeImage = new ResizeImage {Height = 100, Width = 100},
         WebP = true
@@ -230,8 +229,7 @@ var image = File.ReadAllBytes("your-image-location-on-disk.png");
 var response = await krakenClient.OptimizeWait(
     image, 
     "image-name.jpg",
-    new Model.S3.OptimizeUploadWaitRequest(
-    "account", "key","container". "region")
+    new Model.S3.OptimizeUploadWaitRequest("account", "key", "container", "region")
     {
         ResizeImage = new ResizeImage {Height = 100, Width = 100},
         WebP = true
