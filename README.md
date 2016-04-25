@@ -7,6 +7,7 @@ The SeaMist library interacts with the Kraken.io REST API allowing you to utiliz
 * [Downloading Images](#downloading-images)
 * [How To Use](#how-to-use)
 * [Authentication](#authentication)
+* [Direct upload](#-irect-upload)
 * [Wait and Callback URL](#wait-and-callback-url)
   * [Wait Option](#wait-option)
   * [Callback URL](#callback-url)
@@ -32,7 +33,7 @@ Remember - never link to optimized images offered to download. You have to downl
 
 ## How to use
 
-You can optimize your images by providing the URL of the image you want to optimize. Just keep in mind that the image URL must be accessible for Kraken. The upload option isn’t supported within the current version of SeaMist.
+You can optimize your images by providing the URL of the image you want to optimize or upload the image directly instead. Just keep in mind that the image URL must be accessible for Kraken.
 
 ## Authentication
 
@@ -40,6 +41,31 @@ The first step is to authenticate to Kraken API by providing your unique API Key
 
 ```C#
  var connection = KrakenConnection.Create("key", "secret");
+```
+
+## Direct upload
+SeaMist for Kraken allows you to easily upload your images as can be seen within the axample below:
+
+**Wait:**
+
+```C#
+var krakenClient = new KrakenClient(connection);
+
+var image = File.ReadAllBytes("your-image-location-on-disk.png"); 
+
+var response = await krakenClient.OptimizeWait(image, "test.png");
+```
+
+**Callback Url:**
+
+```C#
+var krakenClient = new KrakenClient(connection);
+
+var image = File.ReadAllBytes("your-image-location-on-disk.png"); 
+
+var response = await krakenClient.Optimize(image, 
+                                           "test.png", 
+                                           new Uri("http://awesome-website.com/kraken_results"));
 ```
 
 ## Wait and Callback URL
