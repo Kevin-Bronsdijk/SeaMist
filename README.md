@@ -7,7 +7,7 @@ The SeaMist library interacts with the Kraken.io REST API allowing you to utiliz
 * [Downloading Images](#downloading-images)
 * [How To Use](#how-to-use)
 * [Authentication](#authentication)
-* [Direct upload](#-irect-upload)
+* [Direct upload](#direct-upload)
 * [Wait and Callback URL](#wait-and-callback-url)
   * [Wait Option](#wait-option)
   * [Callback URL](#callback-url)
@@ -53,7 +53,12 @@ var krakenClient = new KrakenClient(connection);
 
 var image = File.ReadAllBytes("your-image-location-on-disk.png"); 
 
-var response = await krakenClient.OptimizeWait(image, "test.png");
+var response = await krakenClient.OptimizeWait(
+                image,
+                "name-of-image.png",
+                new OptimizeUploadWaitRequest()
+                );
+
 ```
 
 **Callback Url:**
@@ -63,9 +68,11 @@ var krakenClient = new KrakenClient(connection);
 
 var image = File.ReadAllBytes("your-image-location-on-disk.png"); 
 
-var response = await krakenClient.Optimize(image, 
-                                           "test.png", 
-                                           new Uri("http://awesome-website.com/kraken_results"));
+var response = await krakenClient.Optimize(
+                image,
+                "name-of-image.png",
+                new OptimizeUploadRequest(new Uri("http://awesome-website.com/kraken_results"))
+                );
 ```
 
 ## Wait and Callback URL
@@ -120,14 +127,14 @@ SeaMist supports the option which allows you to store optimized images directly 
 
 ### Azure Blob
 
-**Request Azure Blob Storage:**
+**Azure Blob Storage:**
 
 ```C#
 using SeaMist.Model.Azure;
 
 var krakenClient = new KrakenClient(connection);
 
-response = await client.OptimizeWait(
+var response = await krakenClient.OptimizeWait(
    new Uri("http://image-url.com/file.jpg"),
    new DataStore(
       "account",
@@ -135,31 +142,59 @@ response = await client.OptimizeWait(
       "container"
       )
 );
+```
 
-// Azure using OptimizeWaitRequest. Enables all options.
-response = await client.OptimizeWait(new SeaMist.Model.Azure.OptimizeWaitRequest()
+**Azure Blob Storage with options - Deprecated:**
+
+```C#
+var response = await krakenClient.OptimizeWait(new Model.Azure.OptimizeWaitRequest()
 {
    ImageUrl = new Uri("http://image-url.com/file.jpg"),
-      Lossy = true,
-      BlobStore = new DataStore(
-        "account",
-        "key",
-        "container"
-        )
-}
-);
-
+   Lossy = true,
+   BlobStore = new DataStore(
+       "account",
+       "key",
+       "container")
+});
 ```
+
+**Azure Blob Storage with options:**
+
+```C#
+var response = await krakenClient.OptimizeWait(new Model.Azure.OptimizeWaitRequest(
+        new Uri("http://image-url.com/file.jpg"), "account", "key", "container")
+        {
+            ResizeImage = new ResizeImage { Height = 100, Width = 100 },
+            WebP = true
+        }
+);
+```
+
+**Azure Blob Storage upload with options:**
+
+```C#
+var image = File.ReadAllBytes("your-image-location-on-disk.png"); 
+
+var response = await krakenClient.OptimizeWait(
+    image, 
+    "image-name.jpg",
+    new Model.Azure.OptimizeUploadWaitRequest("account", "key","container")
+    {
+        ResizeImage = new ResizeImage {Height = 100, Width = 100},
+        WebP = true
+    });
+```
+
 ### Amazon S3
 
-**Request Amazon S3 bucket:**
+**Amazon S3 - Deprecated:**
 
 ```C#
 using SeaMist.Model.S3;
 
 var krakenClient = new KrakenClient(connection);
 
-response = await client.OptimizeWait(
+var response = await krakenClient.OptimizeWait(
    new Uri("http://image-url.com/file.jpg"),
    new DataStore(
       "key",
@@ -168,6 +203,37 @@ response = await client.OptimizeWait(
       "region"
       )
 );
+
+```
+**Amazon S3:**
+
+```C#
+using SeaMist.Model.S3;
+
+var krakenClient = new KrakenClient(connection);
+
+ var response = await krakenClient.OptimizeWait(new Model.S3.OptimizeWaitRequest(
+    new Uri("http://image-url.com/file.jpg"), "account", "key", "container", "region")
+    {
+        ResizeImage = new ResizeImage { Height = 100, Width = 100 },
+        WebP = true
+    });
+    
+```
+
+**Amazon S3 upload with options:**
+
+```C#
+var image = File.ReadAllBytes("your-image-location-on-disk.png"); 
+
+var response = await krakenClient.OptimizeWait(
+    image, 
+    "image-name.jpg",
+    new Model.S3.OptimizeUploadWaitRequest("account", "key", "container", "region")
+    {
+        ResizeImage = new ResizeImage {Height = 100, Width = 100},
+        WebP = true
+    });
 ```
 
 ## Lossy Optimization
@@ -204,7 +270,7 @@ To recompress your PNG or JPEG files into WebP format simply set `WebP = true` f
 ```C#
 var krakenClient = new KrakenClient(connection);
 
-var request = new OptimizeRequest(
+var request = new OptimizeWaitRequest(
     new Uri("http://image-url.com/file.jpg"))
     {
         Lossy = true,
@@ -225,7 +291,7 @@ However there are situations when you might want to preserve some of the meta in
 ```C#
 var krakenClient = new KrakenClient(connection);
 
-var optimizeRequest = new OptimizeWaitRequest(
+var request = new OptimizeWaitRequest(
     new Uri("http://image-url.com/file.jpg"))
     {
        PreserveMeta = new PreserveMeta[] { PreserveMeta.Geotag }
@@ -241,7 +307,7 @@ Image resizing option is great for creating thumbnails or preview images in your
 ```C#
 var krakenClient = new KrakenClient(connection);
 
-var optimizeRequest = new OptimizeWaitRequest(
+var request = new OptimizeWaitRequest(
     new Uri("http://image-url.com/file.jpg"))
     {
         ResizeImage = new ResizeImage
