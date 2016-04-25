@@ -5,10 +5,13 @@ namespace SeaMist.Model
     public abstract class OptimizeRequestBase : IRequest
     {
         [JsonProperty("lossy")]
-        public bool Lossy { get; set; }
+        public bool Lossy { get; set; } = false;
 
         [JsonProperty("webp")]
-        public bool WebP { get; set; }
+        public bool WebP { get; set; } = false;
+
+        [JsonProperty("auto_orient")]
+        public bool AutoOrient { get; set; } = false;
 
         [JsonProperty("convert")]
         public ConvertImage ConvertImage { get; set; }

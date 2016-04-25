@@ -6,6 +6,11 @@ namespace SeaMist.Model.Azure
     public class OptimizeWaitRequest : Model.OptimizeWaitRequest
     {
         // Todo: can be altered after removing Obsolete client calls
+        public OptimizeWaitRequest()
+        {
+        }
+
+        // Todo: can be altered after removing Obsolete client calls
         public OptimizeWaitRequest(Uri imageUrl, IDataStore dataStore) : base(imageUrl)
         {
             BlobStore = dataStore;

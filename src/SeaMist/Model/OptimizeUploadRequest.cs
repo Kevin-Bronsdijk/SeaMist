@@ -22,8 +22,6 @@ namespace SeaMist.Model
         private void Setup()
         {
             Authentication = new Authentication();
-            Lossy = false;
-            WebP = false;
         }
     }
 }

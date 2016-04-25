@@ -17,5 +17,8 @@ namespace SeaMist.Model
 
         [JsonProperty("background")]
         public string BackgroundColor { get; set; }
+
+        [JsonProperty("enhance")]
+        public bool Enhance { get; set; } = false;
     }
 }

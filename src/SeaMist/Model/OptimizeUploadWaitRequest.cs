@@ -16,8 +16,6 @@ namespace SeaMist.Model
         {
             Authentication = new Authentication();
             Wait = true;
-            Lossy = false;
-            WebP = false;
         }
     }
 }

@@ -7,7 +7,6 @@ namespace SeaMist.Model
     {
         public OptimizeRequest(Uri imageUrl, Uri callbackUrl)
         {
-            Setup();
             ImageUrl = imageUrl;
             CallbackUrl = callbackUrl;
             Authentication = new Authentication();
@@ -18,11 +17,5 @@ namespace SeaMist.Model
 
         [JsonProperty("callback_url")]
         public Uri CallbackUrl { get; set; }
-
-        private void Setup()
-        {
-            Lossy = false;
-            WebP = false;
-        }
     }
 }

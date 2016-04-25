@@ -65,13 +65,14 @@ namespace Tests
 
             Assert.IsTrue(result.Success);
             Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
-            Assert.IsTrue(result.Success);
+
 
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.PlanName));
             Assert.IsTrue(result.Body.Active || result.Body.Active == false);
             Assert.IsTrue(result.Body.QuotaTotal > -0);
             Assert.IsTrue(result.Body.QuotaUsed > -0);
             Assert.IsTrue(result.Body.QuotaRemaining > -999999);
+            Assert.IsTrue(result.Body.Success);
         }
 
         [TestMethod]
@@ -130,6 +131,7 @@ namespace Tests
             Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
             Assert.IsTrue(result.Success);
 
+            Assert.IsTrue(result.Body.Success);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.FileName));
             Assert.IsTrue(result.Body.KrakedSize > 0);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
@@ -229,13 +231,38 @@ namespace Tests
         }
 
         [TestMethod]
+        public void KrakenClient_CustomRequestConvertImageFormatEmptyConstructor_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var convertImage = new ConvertImage()
+            {
+                BackgroundColor = "#ffffff",
+                Format = ImageFormat.gif
+            };
+
+            var request = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
+            {
+                ConvertImage = convertImage
+            };
+
+            var response = krakenClient.OptimizeWait(request);
+            var result = response.Result;
+
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+            Assert.IsTrue(result.Body.KrakedUrl.EndsWith(".gif"));
+        }
+
+        [TestMethod]
         public void KrakenClient_CustomRequestChangeSize_IsTrue()
         {
             var krakenClient = HelperFunctions.CreateWorkingClient();
 
             var request = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
             {
-                ResizeImage = new ResizeImage {Height = 100, Width = 100}
+                ResizeImage = new ResizeImage {Height = 100, Width = 100,
+                    BackgroundColor = "#ffffff" , Strategy = Strategy.exact}
             };
 
             var response = krakenClient.OptimizeWait(request);
@@ -357,12 +384,13 @@ namespace Tests
         [TestMethod]
         public void KrakenClient_UploadImageWaitResult_IsTrue()
         {
+            var testImageName = TestData.TestImageName;
             var krakenClient = HelperFunctions.CreateWorkingClient();
             var image = File.ReadAllBytes(TestData.LocalTestImage);
 
             var response = krakenClient.OptimizeWait(
                 image,
-                TestData.TestImageName,
+                testImageName,
                 new OptimizeUploadWaitRequest()
                 );
 
@@ -373,9 +401,9 @@ namespace Tests
             Assert.IsTrue(result.Body != null);
 
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.FileName));
-            Assert.IsTrue(result.Body.FileName == TestData.TestImageName);
+            Assert.IsTrue(result.Body.FileName == testImageName);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.KrakedUrl.EndsWith(TestData.TestImageName));
+            Assert.IsTrue(result.Body.KrakedUrl.EndsWith(testImageName));
             Assert.IsTrue(result.Body.KrakedSize > 0);
             Assert.IsTrue(result.Body.OriginalSize > 0);
             Assert.IsTrue(result.Body.SavedBytes > 0);
@@ -718,6 +746,31 @@ namespace Tests
         }
 
         [TestMethod]
+        public void KrakenClient_UploadOptimizeWaitAmazonDataStore_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+            var image = File.ReadAllBytes(TestData.LocalTestImage);
+
+            var response = krakenClient.OptimizeWait(
+                image,
+                TestData.TestImageName,
+                new SeaMist.Model.S3.OptimizeUploadWaitRequest(new SeaMist.Model.S3.DataStore(
+                    Settings.AmazonKey,
+                    Settings.AmazonSecret,
+                    Settings.AmazonBucket,
+                    string.Empty)
+                    )
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains("s3.amazonaws.com"));
+        }
+
+        [TestMethod]
         public void KrakenClient_UploadOptimizeCallbackAmazon_IsTrue()
         {
             var krakenClient = HelperFunctions.CreateWorkingClient();
@@ -732,6 +785,32 @@ namespace Tests
                     Settings.AmazonSecret,
                     Settings.AmazonBucket,
                     string.Empty
+                    )
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+        }
+
+        [TestMethod]
+        public void KrakenClient_UploadOptimizeCallbackAmazonDataStore_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+            var image = File.ReadAllBytes(TestData.LocalTestImage);
+
+            var response = krakenClient.Optimize(
+                image,
+                TestData.TestImageName,
+                new SeaMist.Model.S3.OptimizeUploadRequest(
+                    callbackUri, new SeaMist.Model.S3.DataStore(
+                    Settings.AmazonKey,
+                    Settings.AmazonSecret,
+                    Settings.AmazonBucket,
+                    string.Empty)
                     )
                 );
 
@@ -893,7 +972,6 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
         }
 
-
         [TestMethod]
         public void KrakenClient_OptimizeWaitAzureUsingIOptimizeWaitRequestDataStore_IsTrue()
         {
@@ -917,6 +995,30 @@ namespace Tests
         }
 
         [TestMethod]
+        public void KrakenClient_OptimizeWaitAmazonUsingIOptimizeWaitRequestDataStore_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var response = krakenClient.OptimizeWait(
+                new SeaMist.Model.S3.OptimizeWaitRequest(
+                    new Uri(TestData.ImageOne),
+                    new SeaMist.Model.S3.DataStore(
+                        Settings.AmazonKey,
+                        Settings.AmazonSecret,
+                        Settings.AmazonBucket,
+                        string.Empty
+                        )
+                    ));
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains("s3.amazonaws.com"));
+        }
+
+        [TestMethod]
         public void KrakenClient_OptimizeWaitAmazonUsingIOptimizeWaitRequest_IsTrue()
         {
             var krakenClient = HelperFunctions.CreateWorkingClient();
@@ -936,6 +1038,31 @@ namespace Tests
             Assert.IsTrue(result.Success);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
             Assert.IsTrue(result.Body.KrakedUrl.Contains("s3.amazonaws.com"));
+        }
+
+
+        [TestMethod]
+        public void KrakenClient_DocsSampleCodeOld_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var response =  krakenClient.OptimizeWait(new SeaMist.Model.Azure.OptimizeWaitRequest()
+            {
+                ImageUrl = new Uri(TestData.ImageOne),
+                Lossy = true,
+                BlobStore = new DataStore(
+                    Settings.AzureAccount,
+                    Settings.AzureKey,
+                    Settings.AzureContainer
+               )
+            });
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
         }
     }
 }

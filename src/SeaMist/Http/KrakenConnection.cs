@@ -115,7 +115,7 @@ namespace SeaMist.Http
                 content.Add(body);
                 content.Add(new StreamContent(new MemoryStream(image)), filename, filename);
 
-                using (var responseMessage = await _client.PostAsync(_krakenApiUrl + krakenApiRequest.Uri, content))
+                using (var responseMessage = await _client.PostAsync(_krakenApiUrl + krakenApiRequest.Uri, content, cancellationToken))
                 {
                     var test = await responseMessage.Content.ReadAsStringAsync();
 
