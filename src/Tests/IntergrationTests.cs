@@ -19,7 +19,7 @@ namespace Tests
     [DeploymentItem("Images")]
     public class IntergrationTests
     {
-        private readonly Uri callbackUri = new Uri("http://requestb.in/15gm5dz1");
+        private readonly Uri _callbackUri = new Uri("http://requestb.in/15gm5dz1");
 
         [TestInitialize]
         public void Initialize()
@@ -179,7 +179,7 @@ namespace Tests
             var krakenClient = HelperFunctions.CreateWorkingClient();
 
             var response = krakenClient.Optimize(
-                new Uri(TestData.ImageOne), callbackUri);
+                new Uri(TestData.ImageOne), _callbackUri);
 
             var result = response.Result;
 
@@ -283,7 +283,7 @@ namespace Tests
         {
             var krakenClient = HelperFunctions.CreateWorkingClient();
 
-            var request = new OptimizeRequest(new Uri(TestData.ImageOne), callbackUri);
+            var request = new OptimizeRequest(new Uri(TestData.ImageOne), _callbackUri);
 
             var response = krakenClient.Optimize(request);
             var result = response.Result;
@@ -297,7 +297,7 @@ namespace Tests
         {
             var krakenClient = HelperFunctions.CreateWorkingClient(true);
 
-            var request = new OptimizeRequest(new Uri(TestData.ImageOne), callbackUri);
+            var request = new OptimizeRequest(new Uri(TestData.ImageOne), _callbackUri);
 
             var response = krakenClient.Optimize(request);
             var result = response.Result;
@@ -418,7 +418,7 @@ namespace Tests
             var response = krakenClient.Optimize(
                 image,
                 TestData.TestImageName,
-                new OptimizeUploadRequest(callbackUri)
+                new OptimizeUploadRequest(_callbackUri)
                 );
 
             var result = response.Result;
@@ -460,7 +460,7 @@ namespace Tests
             {
                 var response = krakenClient.Optimize(
                  new Uri(TestData.ImageOne),
-                 callbackUri,
+                 _callbackUri,
                  new FakeDataStore()
                  );
 
@@ -503,7 +503,7 @@ namespace Tests
 
             var response = krakenClient.Optimize(
                 new Uri(TestData.ImageOne),
-                callbackUri,
+                _callbackUri,
                 new DataStore(
                     Settings.AzureAccount,
                     Settings.AzureKey,
@@ -549,7 +549,7 @@ namespace Tests
 
             var response = krakenClient.Optimize(
                 new Uri(TestData.ImageOne),
-                callbackUri,
+                _callbackUri,
                 new SeaMist.Model.S3.DataStore(
                     Settings.AmazonKey,
                     Settings.AmazonSecret,
@@ -651,7 +651,7 @@ namespace Tests
                 image,
                 TestData.TestImageName,
                 new SeaMist.Model.Azure.OptimizeUploadRequest(
-                    callbackUri,
+                    _callbackUri,
                     Settings.AzureAccount,
                     Settings.AzureKey,
                     Settings.AzureContainer
@@ -676,7 +676,7 @@ namespace Tests
                 image,
                 TestData.TestImageName,
                 new SeaMist.Model.Azure.OptimizeUploadRequest(
-                    callbackUri,
+                    _callbackUri,
                     new DataStore(
                         Settings.AzureAccount,
                         Settings.AzureKey,
@@ -702,7 +702,7 @@ namespace Tests
                 image,
                 TestData.TestImageName,
                 new SeaMist.Model.Azure.OptimizeUploadRequest(
-                    callbackUri,
+                    _callbackUri,
                     Settings.AzureAccount,
                     Settings.AzureKey,
                     Settings.AzureContainer,
@@ -780,7 +780,7 @@ namespace Tests
                 image,
                 TestData.TestImageName,
                 new SeaMist.Model.S3.OptimizeUploadRequest(
-                    callbackUri,
+                    _callbackUri,
                     Settings.AmazonKey,
                     Settings.AmazonSecret,
                     Settings.AmazonBucket,
@@ -806,7 +806,7 @@ namespace Tests
                 image,
                 TestData.TestImageName,
                 new SeaMist.Model.S3.OptimizeUploadRequest(
-                    callbackUri, new SeaMist.Model.S3.DataStore(
+                    _callbackUri, new SeaMist.Model.S3.DataStore(
                     Settings.AmazonKey,
                     Settings.AmazonSecret,
                     Settings.AmazonBucket,
@@ -857,7 +857,7 @@ namespace Tests
                 TestData.TestImageName,
                 new OptimizeUploadRequest
                 {
-                    CallbackUrl = callbackUri,
+                    CallbackUrl = _callbackUri,
                     ResizeImage = new ResizeImage {Height = 100, Width = 100},
                     WebP = true
                 }
@@ -910,7 +910,7 @@ namespace Tests
                 image,
                 TestData.TestImageName,
                 new SeaMist.Model.Azure.OptimizeUploadRequest(
-                    callbackUri,
+                    _callbackUri,
                     Settings.AzureAccount,
                     Settings.AzureKey,
                     Settings.AzureContainer
