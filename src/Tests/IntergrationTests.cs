@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Net;
@@ -1056,6 +1057,87 @@ namespace Tests
                     Settings.AzureContainer
                )
             });
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
+        }
+
+        [TestMethod]
+        public void KrakenClient_OptimizeWaitAzureUsingIOptimizeWaitRequestWithRootPath_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var response = krakenClient.OptimizeWait(
+                new SeaMist.Model.Azure.OptimizeWaitRequest(
+                    new Uri(TestData.ImageOne),
+                    Settings.AzureAccount,
+                    Settings.AzureKey,
+                    "$root",
+                    TestData.TestImageName
+                    ));
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
+        }
+
+        [TestMethod]
+        public void KrakenClient_OptimizeWaitAmazonAddHeadersAndMeta_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var dataStore = new SeaMist.Model.S3.DataStore(
+                Settings.AmazonKey,
+                Settings.AmazonSecret,
+                Settings.AmazonBucket,
+                string.Empty
+                );
+
+            dataStore.AddMetadata("x-amz-meta-test1", "value11"); // prefix removed automatically, added by kraken later
+            dataStore.AddMetadata("test2", "value22"); 
+            dataStore.AddHeaders("Cache-Control", "max-age=2222"); // OR x-amz-meta-Cache-Control
+         
+            var response = krakenClient.OptimizeWait(
+                new SeaMist.Model.S3.OptimizeWaitRequest(
+                    new Uri(TestData.ImageOne),
+                    dataStore
+                    ));
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains("s3.amazonaws.com"));
+        }
+
+        [TestMethod]
+        public void KrakenClient_OptimizeWaitAzureAddHeadersAndMeta_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var dataStore = new DataStore(
+                Settings.AzureAccount,
+                Settings.AzureKey,
+                Settings.AzureContainer);
+
+            dataStore.AddMetadata("x-ms-meta-test1", "value1"); // prefix removed automatically, added by kraken later
+            dataStore.AddMetadata("test2", "value2"); 
+            dataStore.AddHeaders("Cache-Control", "public, max-age=2222");
+
+
+            var response = krakenClient.OptimizeWait(
+                new SeaMist.Model.Azure.OptimizeWaitRequest(
+                    new Uri(TestData.ImageOne),
+                    dataStore
+                    ));
 
             var result = response.Result;
 

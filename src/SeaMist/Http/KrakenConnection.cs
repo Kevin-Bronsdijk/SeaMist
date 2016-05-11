@@ -50,7 +50,7 @@ namespace SeaMist.Http
             {
                 SerializerSettings = new JsonSerializerSettings
                 {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
                     Converters = new List<JsonConverter> {new StringEnumConverter {CamelCaseText = true}},
                     NullValueHandling = NullValueHandling.Ignore
                 }
@@ -87,10 +87,14 @@ namespace SeaMist.Http
                 requestMessage.Content = new ObjectContent(krakenApiRequest.Body.GetType(),
                     krakenApiRequest.Body, _formatter, new MediaTypeHeaderValue("application/json"));
 
+                //var test1 = requestMessage.Content.ReadAsStringAsync();
+
                 using (
                     var responseMessage =
                         await _client.SendAsync(requestMessage, cancellationToken).ConfigureAwait(false))
                 {
+                    //var test = await responseMessage.Content.ReadAsStringAsync();
+
                     return await BuildResponse<TResponse>(responseMessage, cancellationToken).ConfigureAwait(false);
                 }
             }
@@ -117,7 +121,7 @@ namespace SeaMist.Http
 
                 using (var responseMessage = await _client.PostAsync(_krakenApiUrl + krakenApiRequest.Uri, content, cancellationToken))
                 {
-                    var test = await responseMessage.Content.ReadAsStringAsync();
+                   // var test = await responseMessage.Content.ReadAsStringAsync();
 
                     return await BuildResponse<TResponse>(responseMessage, cancellationToken).ConfigureAwait(false);
                 }

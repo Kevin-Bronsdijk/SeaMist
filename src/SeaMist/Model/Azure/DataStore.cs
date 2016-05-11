@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+using SeaMist.Http;
 
 namespace SeaMist.Model.Azure
 {
@@ -17,6 +19,29 @@ namespace SeaMist.Model.Azure
             Path = path;
         }
 
+        public void AddHeaders(string key, string value)
+        {
+            key.ThrowIfNullOrEmpty("key");
+            value.ThrowIfNullOrEmpty("value");
+
+            if (Headers == null) { Headers = new Dictionary<string, string>(); }
+
+            Headers.Add(key, value);
+        }
+
+        public void AddMetadata(string key, string value)
+        {
+            key.ThrowIfNullOrEmpty("key");
+            value.ThrowIfNullOrEmpty("value");
+
+            if (Metadata == null) { Metadata = new Dictionary<string, string>(); }
+
+            // Remove prefix, added by Kraken
+            if (key.ToLower().StartsWith("x-ms-meta-")){ key = key.Replace("x-ms-meta-", string.Empty); }
+
+            Metadata.Add(key, value);
+        }
+
         [JsonProperty("account")]
         public string Account { get; set; }
 
@@ -28,6 +53,12 @@ namespace SeaMist.Model.Azure
 
         [JsonProperty("path")]
         public string Path { get; set; } = "/";
+
+        [JsonProperty("headers")]
+        internal Dictionary<string, string> Headers { get; set; } 
+
+        [JsonProperty("metadata")]
+        internal Dictionary<string, string> Metadata { get; set; }
 
         [JsonIgnore]
         public string DataStoreName
