@@ -58,7 +58,6 @@ var response = await krakenClient.OptimizeWait(
                 "name-of-image.png",
                 new OptimizeUploadWaitRequest()
                 );
-
 ```
 
 **Callback Url:**
@@ -180,10 +179,27 @@ var response = await krakenClient.OptimizeWait(
     "image-name.jpg",
     new Model.Azure.OptimizeUploadWaitRequest("account", "key","container")
     {
-        ResizeImage = new ResizeImage {Height = 100, Width = 100},
+        ResizeImage = new ResizeImage { Height = 100, Width = 100 },
         WebP = true
     });
 ```
+
+**Azure Blob Storage with custom headers and metadata:**
+
+```C#
+var dataStore = new SeaMist.Model.Azure.DataStore("account", "key","container");
+
+dataStore.AddMetadata("x-ms-meta-test1", "value1"); 
+dataStore.AddHeaders("Cache-Control", "max-age=2222");
+
+var response = krakenClient.OptimizeWait(
+    new SeaMist.Model.Azure.OptimizeWaitRequest(new Uri(TestData.ImageOne), dataStore)
+    {
+        WebP = true
+    }
+);
+```
+
 
 ### Amazon S3
 
@@ -205,6 +221,7 @@ var response = await krakenClient.OptimizeWait(
 );
 
 ```
+
 **Amazon S3:**
 
 ```C#
@@ -234,6 +251,22 @@ var response = await krakenClient.OptimizeWait(
         ResizeImage = new ResizeImage {Height = 100, Width = 100},
         WebP = true
     });
+```
+
+**Azure Blob Storage with custom headers and metadata:**
+
+```C#
+var dataStore = new SeaMist.Model.S3.DataStore("account", "key","container");
+
+dataStore.AddMetadata("x-amz-meta-test1", "value1"); 
+dataStore.AddHeaders("Cache-Control", "public, max-age=123456");
+
+var response = krakenClient.OptimizeWait(
+    new SeaMist.Model.S3.OptimizeWaitRequest(new Uri(TestData.ImageOne), dataStore)
+    {
+        WebP = true
+    }
+);
 ```
 
 ## Lossy Optimization
