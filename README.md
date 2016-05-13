@@ -17,7 +17,10 @@ The SeaMist library interacts with the Kraken.io REST API allowing you to utiliz
 * [Lossy Optimization](#lossy-optimization)
 * [WebP Compression](#webp-compression)
 * [Preserving Metadata](#preserving-metadata)
+* [Automatic Image Orientation](#automatic-image-orientation)
+* [Chroma Subsampling](#chroma-subsampling)
 * [Image Resizing](#image-resizing)
+* [Image Type Conversion](#image-type-conversion)
 * [API Sandbox](#api-sandbox)
 * [Reseller Account](#reseller-account)
 * [Account Status](#account-status)
@@ -44,34 +47,65 @@ The first step is to authenticate to Kraken API by providing your unique API Key
 ```
 
 ## Direct upload
-SeaMist for Kraken allows you to easily upload your images as can be seen within the axample below:
+SeaMist for Kraken allows you to easily upload your images as can be seen within the examples below. Use the full path option or provide a byte array and name.
 
-**Wait:**
+**Wait using a local file path (version 1.1.7):** 
 
 ```C#
 var krakenClient = new KrakenClient(connection);
 
-var image = File.ReadAllBytes("your-image-location-on-disk.png"); 
-
-var response = await krakenClient.OptimizeWait(
-                image,
-                "name-of-image.png",
-                new OptimizeUploadWaitRequest()
-                );
+var response = await krakenClient.OptimizeWait("c:\your-image-location-on-disk.png",
+    new OptimizeUploadWaitRequest()
+    {
+       // your compression settings
+    }
+);
 ```
 
-**Callback Url:**
+**Wait using a byte array:**
 
 ```C#
 var krakenClient = new KrakenClient(connection);
 
-var image = File.ReadAllBytes("your-image-location-on-disk.png"); 
+var image = File.ReadAllBytes("c:\your-image-location-on-disk.png"); 
+
+var response = await krakenClient.OptimizeWait(
+    image,
+    "name-of-image.png",
+    new OptimizeUploadWaitRequest()
+    {
+        // your compression settings
+    }
+);
+```
+**Callback using a local file path (version 1.1.7): ** 
+
+```C#
+var krakenClient = new KrakenClient(connection);
+
+var response = await krakenClient.Optimize("c:\your-image-location-on-disk.png",
+    new OptimizeUploadRequest(new Uri("http://awesome-website.com/kraken_results"))
+    {
+        // your compression settings
+    }
+);
+```
+
+**Callback Url using a byte array:**
+
+```C#
+var krakenClient = new KrakenClient(connection);
+
+var image = File.ReadAllBytes("c:\your-image-location-on-disk.png"); 
 
 var response = await krakenClient.Optimize(
-                image,
-                "name-of-image.png",
-                new OptimizeUploadRequest(new Uri("http://awesome-website.com/kraken_results"))
-                );
+    image,
+    "name-of-image.png",
+    new OptimizeUploadRequest(new Uri("http://awesome-website.com/kraken_results"))
+    {
+        // your compression settings
+    }
+);
 ```
 
 ## Wait and Callback URL
@@ -313,7 +347,6 @@ var request = new OptimizeWaitRequest(
 var response = await krakenClient.OptimizeWait(request);
 ```
 
-
 ## Preserving Metadata
 
 By default Kraken API will strip all the metadata found in an image to make the image file as small as it is possible, and in both lossy and lossless modes. Entries like EXIF, XMP and IPTC tags, colour profile information, etc. will be stripped altogether.
@@ -332,7 +365,48 @@ var request = new OptimizeWaitRequest(
 
 var response = await krakenClient.OptimizeWait(request);
 ```
-        
+## Automatic Image Orientation
+
+The EXIF (exchangeable image file format) standard specifies an Orientation tag that can be embedded in images, and is usually set in accordance with the reading from a gravity sensor or accelerometer in digital cameras and smartphones. This enables you to take a picture with your camera sideways or upside-down, and stand a reasonable chance of having it display properly on your computer.
+
+For more information on Automatic Image Orientation, please consult the kraken documentation. 
+
+Code sample:
+
+```C#
+var krakenClient = new KrakenClient(connection);
+
+var response = await krakenClient.OptimizeWait("c:\your-image-location-on-disk.jpg",
+    new OptimizeUploadWaitRequest()
+    {
+        AutoOrient = true
+    }
+);
+```
+
+## Chroma Subsampling 
+
+(version 1.1.7)
+
+JPEG is a lossy compression algorithm, meaning that it trades quality to achieve a smaller file size.
+
+The whole point of the JPEG compression format is to reproduce photographs so as to minimize file size while keeping the visual qualities as accurate to the original as possible. For more information on chroma subsampling, please consult the kraken documentation. 
+
+The following options are supported: `Default` (4:2:0) `S422` (4:2:0) or `S444` (4:4:4).
+
+```C#
+var krakenClient = new KrakenClient(connection);
+
+var response = await krakenClient.OptimizeWait("c:\your-image-location-on-disk.jpg",
+    new OptimizeUploadWaitRequest()
+    {
+        Lossy = true,
+        WebP = true,
+        SamplingScheme.S422
+    }
+);
+```
+
 ## Image Resizing
 
 Image resizing option is great for creating thumbnails or preview images in your applications. Kraken will first resize the given image and then optimize it with its vast array of optimization algorithms. The `resize` option needs a few parameters to be passed like desired `width` and/or `height` and a mandatory `strategy` property. For example:
@@ -340,8 +414,8 @@ Image resizing option is great for creating thumbnails or preview images in your
 ```C#
 var krakenClient = new KrakenClient(connection);
 
-var request = new OptimizeWaitRequest(
-    new Uri("http://image-url.com/file.jpg"))
+var response = await krakenClient.OptimizeWait("c:\your-image-location-on-disk.jpg",
+    new OptimizeUploadWaitRequest()
     {
         ResizeImage = new ResizeImage
         {
@@ -349,9 +423,8 @@ var request = new OptimizeWaitRequest(
             Height = 100,
             Strategy = Strategy.fit
         }
-    };
-
-var response = await krakenClient.OptimizeWait(request);
+    }
+);
 ```
 
 The `strategy` property can have one of the following values:
@@ -365,6 +438,30 @@ The `strategy` property can have one of the following values:
 - `square` - This strategy will first crop the image by its shorter dimension to make it a square, then resize it to the specified size.
 - `fill` - This strategy allows you to resize the image to fit the specified bounds while preserving the aspect ratio (just like auto strategy). The optional background property allows you to specify a color which will be used to fill the unused portions of the previously specified bounds.
 The background property can be formatted in HEX notation "#f60" or "#ff6600", RGB "rgb(255, 0, 0)" or RGBA "rgba(91, 126, 156, 0.7)". The default background color is white. Example usage of fill strategy:
+
+## Image Type Conversion
+
+Kraken allows you to easily convert different images from one type/format to another. If, for example, you would like to turn you transparent PNG file into a JPEG with a grey background.
+
+In order to convert between different image types you need to add the `ConvertImage` object to you request. This object takes two properties:
+
+`format` —	The image format you wish to convert your image into. This can accept one of the following values: `ImageFormat.jpeg`, `ImageFormat.png` or `ImageFormat.gif`.
+
+`background` —	Background image when converting from transparent file formats like PNG or GIF into fully opaque format like JPEG. The background property can be passed in HEX notation "#f60" or "#ff6600". The default background color is white.
+
+```C#
+var krakenClient = new KrakenClient(connection);
+
+var response = await krakenClient.OptimizeWait("c:\your-image-location-on-disk.jpg",
+    new OptimizeUploadWaitRequest()
+    {
+        ConvertImage = new ConvertImage(ImageFormat.gif)
+        {
+            BackgroundColor = "#ffffff"
+        }
+    }
+);
+```
 
 ## API Sandbox
 
