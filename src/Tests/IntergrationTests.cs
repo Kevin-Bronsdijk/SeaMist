@@ -113,7 +113,7 @@ namespace Tests
 
             var result = response.Result;
 
-            Assert.IsTrue((int) result.StatusCode == 422);
+            Assert.IsTrue((int)result.StatusCode == 422);
             Assert.IsTrue(result.Success == false);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Error));
         }
@@ -262,8 +262,13 @@ namespace Tests
 
             var request = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
             {
-                ResizeImage = new ResizeImage {Height = 100, Width = 100,
-                    BackgroundColor = "#ffffff" , Strategy = Strategy.exact}
+                ResizeImage = new ResizeImage
+                {
+                    Height = 100,
+                    Width = 100,
+                    BackgroundColor = "#ffffff",
+                    Strategy = Strategy.exact
+                }
             };
 
             var response = krakenClient.OptimizeWait(request);
@@ -344,7 +349,7 @@ namespace Tests
 
             var request = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
             {
-                PreserveMeta = new[] {PreserveMeta.Geotag}
+                PreserveMeta = new[] { PreserveMeta.Geotag }
             };
 
             var response = krakenClient.OptimizeWait(request);
@@ -368,8 +373,8 @@ namespace Tests
                     if (reader.GetTagValue(ExifTags.GPSLongitude, out GpsLongArray)
                         && reader.GetTagValue(ExifTags.GPSLatitude, out GpsLatArray))
                     {
-                        GpsLongDouble = GpsLongArray[0] + GpsLongArray[1]/60 + GpsLongArray[2]/3600;
-                        GpsLatDouble = GpsLatArray[0] + GpsLatArray[1]/60 + GpsLatArray[2]/3600;
+                        GpsLongDouble = GpsLongArray[0] + GpsLongArray[1] / 60 + GpsLongArray[2] / 3600;
+                        GpsLatDouble = GpsLatArray[0] + GpsLatArray[1] / 60 + GpsLatArray[2] / 3600;
                     }
 
                     Assert.IsTrue(GpsLongDouble == 120.7602005);
@@ -834,7 +839,7 @@ namespace Tests
                 TestData.TestImageName,
                 new OptimizeUploadWaitRequest
                 {
-                    ResizeImage = new ResizeImage {Height = 100, Width = 100},
+                    ResizeImage = new ResizeImage { Height = 100, Width = 100 },
                     WebP = true
                 }
                 );
@@ -859,7 +864,7 @@ namespace Tests
                 new OptimizeUploadRequest
                 {
                     CallbackUrl = _callbackUri,
-                    ResizeImage = new ResizeImage {Height = 100, Width = 100},
+                    ResizeImage = new ResizeImage { Height = 100, Width = 100 },
                     WebP = true
                 }
                 );
@@ -887,7 +892,7 @@ namespace Tests
                     Settings.AzureContainer
                     )
                 {
-                    ResizeImage = new ResizeImage {Height = 100, Width = 100},
+                    ResizeImage = new ResizeImage { Height = 100, Width = 100 },
                     WebP = true
                 }
                 );
@@ -917,7 +922,7 @@ namespace Tests
                     Settings.AzureContainer
                     )
                 {
-                    ResizeImage = new ResizeImage {Height = 100, Width = 100},
+                    ResizeImage = new ResizeImage { Height = 100, Width = 100 },
                     WebP = true
                 }
                 );
@@ -1047,7 +1052,7 @@ namespace Tests
         {
             var krakenClient = HelperFunctions.CreateWorkingClient();
 
-            var response =  krakenClient.OptimizeWait(new SeaMist.Model.Azure.OptimizeWaitRequest()
+            var response = krakenClient.OptimizeWait(new SeaMist.Model.Azure.OptimizeWaitRequest()
             {
                 ImageUrl = new Uri(TestData.ImageOne),
                 Lossy = true,
@@ -1101,14 +1106,19 @@ namespace Tests
                 );
 
             dataStore.AddMetadata("x-amz-meta-test1", "value11"); // prefix removed automatically, added by kraken later
-            dataStore.AddMetadata("test2", "value22"); 
+            dataStore.AddMetadata("test2", "value22");
             dataStore.AddHeaders("Cache-Control", "max-age=2222"); // OR x-amz-meta-Cache-Control
-         
+
             var response = krakenClient.OptimizeWait(
                 new SeaMist.Model.S3.OptimizeWaitRequest(
                     new Uri(TestData.ImageOne),
                     dataStore
-                    ));
+                    )
+                {
+                    ResizeImage = new ResizeImage { Height = 100, Width = 100 },
+                    WebP = true
+                }
+            );
 
             var result = response.Result;
 
@@ -1129,15 +1139,19 @@ namespace Tests
                 Settings.AzureContainer);
 
             dataStore.AddMetadata("x-ms-meta-test1", "value1"); // prefix removed automatically, added by kraken later
-            dataStore.AddMetadata("test2", "value2"); 
+            dataStore.AddMetadata("test2", "value2");
             dataStore.AddHeaders("Cache-Control", "public, max-age=2222");
-
 
             var response = krakenClient.OptimizeWait(
                 new SeaMist.Model.Azure.OptimizeWaitRequest(
                     new Uri(TestData.ImageOne),
                     dataStore
-                    ));
+                    )
+                {
+                    ResizeImage = new ResizeImage { Height = 100, Width = 100 },
+                    WebP = true
+                }
+            );
 
             var result = response.Result;
 
@@ -1145,6 +1159,86 @@ namespace Tests
             Assert.IsTrue(result.Success);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
             Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
+        }
+
+        [TestMethod]
+        public void KrakenClient_UploadFromFilePathImageWait_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var response = krakenClient.OptimizeWait(
+                TestData.LocalTestImage,
+                new OptimizeUploadWaitRequest()
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+        }
+
+        [TestMethod]
+        public void KrakenClient_UploadFromFilePathImageCallback_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var response = krakenClient.Optimize(
+                TestData.LocalTestImage,
+                new OptimizeUploadRequest(_callbackUri)
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+        }
+
+        [TestMethod]
+        public void KrakenClient_SamplingScheme_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var response = krakenClient.OptimizeWait(
+                TestData.LocalTestImage,
+                new OptimizeUploadWaitRequest()
+                {
+                    Lossy = true,
+                    WebP = true,
+                    SamplingScheme = SamplingScheme.S444
+                }
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+        }
+
+        [TestMethod]
+        public void KrakenClient_AutoOrient_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var response = krakenClient.OptimizeWait(
+                TestData.LocalTestImage,
+                new OptimizeUploadWaitRequest()
+                {
+                    AutoOrient = true
+                }
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
         }
     }
 }

@@ -1,9 +1,12 @@
 using Newtonsoft.Json;
+using SeaMist.Http;
 
 namespace SeaMist.Model
 {
     public abstract class OptimizeRequestBase : IRequest
     {
+        private SamplingScheme _samplingScheme;
+
         [JsonProperty("lossy")]
         public bool Lossy { get; set; } = false;
 
@@ -21,6 +24,21 @@ namespace SeaMist.Model
 
         [JsonProperty("preserve_meta")]
         public PreserveMeta[] PreserveMeta { get; set; }
+
+        [JsonIgnore]
+        public SamplingScheme SamplingScheme
+        {
+            get { return _samplingScheme; }
+            set
+            {
+                // It's not very elegant, but works.
+                _samplingScheme = value;
+                SamplingSchemeInternal = ModelHelper.GetSamplingScheme(_samplingScheme);
+            }
+        }
+
+        [JsonProperty("sampling_scheme")]
+        internal string SamplingSchemeInternal { get; set; }
 
         [JsonProperty("auth")]
         public Authentication Authentication { get; set; }

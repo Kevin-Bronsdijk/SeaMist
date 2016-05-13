@@ -20,5 +20,9 @@ namespace SeaMist.Model
 
         [JsonProperty("enhance")]
         public bool Enhance { get; set; } = false;
+
+        [JsonProperty("crop_mode")]
+        public string CropMode { get; set; } = "c";
+        
     }
 }

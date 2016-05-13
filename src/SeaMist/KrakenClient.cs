@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using SeaMist.Http;
@@ -101,6 +102,26 @@ namespace SeaMist
             return message;
         }
 
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(string filePath, IOptimizeUploadWaitRequest optimizeWaitRequest)
+        {
+            return OptimizeWait(filePath, optimizeWaitRequest, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(string filePath,
+            IOptimizeUploadWaitRequest optimizeWaitRequest, CancellationToken cancellationToken)
+        {
+            filePath.ThrowIfNullOrEmpty("filePath");
+            if (!File.Exists(filePath)) { throw new FileNotFoundException(); }
+
+            var file = File.ReadAllBytes(filePath);
+
+            var message =
+                _connection.ExecuteUpload<OptimizeWaitResult>(new KrakenApiRequest(optimizeWaitRequest, "v1/upload"),
+                    file, Path.GetFileName(filePath), cancellationToken);
+
+            return message;
+        }
+
         public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename,
             IOptimizeUploadRequest optimizeRequest)
         {
@@ -114,6 +135,25 @@ namespace SeaMist
 
             var message = _connection.ExecuteUpload<OptimizeResult>(new KrakenApiRequest(optimizeRequest, "v1/upload"),
                 image, filename, cancellationToken);
+
+            return message;
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(string filePath, IOptimizeUploadRequest optimizeRequest)
+        {
+            return Optimize(filePath, optimizeRequest, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(string filePath,
+            IOptimizeUploadRequest optimizeRequest, CancellationToken cancellationToken)
+        {
+            filePath.ThrowIfNullOrEmpty("filePath");
+            if (!File.Exists(filePath)) { throw new FileNotFoundException(); }
+
+            var file = File.ReadAllBytes(filePath);
+
+            var message = _connection.ExecuteUpload<OptimizeResult>(new KrakenApiRequest(optimizeRequest, "v1/upload"),
+                file, filePath, cancellationToken);
 
             return message;
         }
