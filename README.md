@@ -1,7 +1,8 @@
 SeaMist a .NET library for the Kraken.io REST API
 =============
+[![Build status](https://ci.appveyor.com/api/projects/status/y166lwaub0596dk8?svg=true)](https://ci.appveyor.com/project/Kevin-Bronsdijk/SeaMist) [![NuGet](https://img.shields.io/nuget/v/SeaMist.svg?maxAge=2592000)](https://www.nuget.org/packages/scanr-net/)
 
-The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface. Latest [blog post](http://devslice.net/2016/02/seamist-update-external-storage/) covering SeaMist updates.
+The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface. 
 
 * [Getting Started](#getting-started)
 * [Downloading Images](#downloading-images)
@@ -49,7 +50,7 @@ The first step is to authenticate to Kraken API by providing your unique API Key
 ## Direct upload
 SeaMist for Kraken allows you to easily upload your images as can be seen within the examples below. Use the full path option or provide a byte array and name.
 
-**Wait using a local file path (version 1.1.7):** 
+**Wait using a local file path:** 
 
 ```C#
 var krakenClient = new KrakenClient(connection);
@@ -78,7 +79,8 @@ var response = await krakenClient.OptimizeWait(
     }
 );
 ```
-**Callback using a local file path (version 1.1.7): ** 
+
+**Callback using a local file path:** 
 
 ```C#
 var krakenClient = new KrakenClient(connection);
@@ -385,8 +387,6 @@ var response = await krakenClient.OptimizeWait("c:\your-image-location-on-disk.j
 ```
 
 ## Chroma Subsampling 
-
-(version 1.1.7)
 
 JPEG is a lossy compression algorithm, meaning that it trades quality to achieve a smaller file size.
 
