@@ -17,6 +17,7 @@ using OptimizeWaitRequest = SeaMist.Model.OptimizeWaitRequest;
 namespace Tests
 {
     [TestClass]
+    [Ignore]
     [DeploymentItem("Images")]
     public class IntergrationTests
     {

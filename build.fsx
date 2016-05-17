@@ -12,11 +12,9 @@ open Fake.AssemblyInfoFile
 
 let project = "SeaMist"
 let authors = ["Kevin Bronsdijk"]
-let summary = "A client SDK for Kraken.io."
+let summary = "SeaMist a .NET library for the Kraken.io REST API"
 let version = "0.1.1.7"
-let description = """
-The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Kraken�s features using a .NET interface.
-"""
+let description = "The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Krakens features using a .NET interface."
 let notes = "Added file path support for uploads, Chroma Subsampling and crop_mode. For more information and documentation, please visit the project site on GitHub."
 let nugetVersion = "1.1.7"
 let tags = "kraken.io C# API image optimization"
@@ -28,6 +26,9 @@ let gitName = "SeaMist"
 // --------------------------------------------------------------------------------------
 
 let buildDir = "./output/"
+let packagingOutputPath = "./nuGet/"
+let packagingWorkingDir = "./inputNuget/"
+let nugetDependencies = getDependencies "./src/SeaMist/packages.config"
 
 // --------------------------------------------------------------------------------------
 
@@ -60,11 +61,38 @@ Target "Build" (fun _ ->
 
 // --------------------------------------------------------------------------------------
 
+Target "CreatePackage" (fun _ ->
+
+    CreateDir packagingWorkingDir
+    CleanDir packagingWorkingDir
+    CopyFile packagingWorkingDir "./output/SeaMist.dll"
+
+    NuGet (fun p -> 
+        {p with
+            Authors = authors
+            Dependencies = nugetDependencies
+            Files = [@"SeaMist.dll", Some @"lib/net452", None]
+            Project = project
+            Description = description
+            OutputPath = packagingOutputPath
+            Summary = summary
+            WorkingDir = packagingWorkingDir
+            Version = nugetVersion
+            ReleaseNotes = notes
+            Publish = false }) 
+            "scanr.nuspec"
+            
+    DeleteDir packagingWorkingDir
+)
+
+// --------------------------------------------------------------------------------------
+
 Target "All" DoNothing
 
 "Clean"
   ==> "AssemblyInfo"
   ==> "Build"
+  ==> "CreatePackage"
   ==> "All"
 
 RunTargetOrDefault "All"
