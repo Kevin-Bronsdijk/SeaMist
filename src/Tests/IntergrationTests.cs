@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Net;
@@ -92,6 +91,7 @@ namespace Tests
         }
 
         [TestMethod]
+        [Ignore]
         public void KrakenClient_ResellerAccountRequestNotAReseller_IsTrue()
         {
             var krakenClient = HelperFunctions.CreateWorkingClient();
@@ -1240,6 +1240,116 @@ namespace Tests
             Assert.IsTrue(result.Success);
             Assert.IsTrue(result.Body != null);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+        }
+
+
+        [TestMethod]
+        public void KrakenClient_ImageSetUploadCallBack_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var optimizeSetUploadRequest = new OptimizeSetUploadRequest(_callbackUri);
+            optimizeSetUploadRequest.AddSet(new SetResizeImage { Name = "test1", Height = 10, Width = 10 });
+            optimizeSetUploadRequest.AddSet(new SetResizeImage { Name = "test2", Height = 15, Width = 15 });
+            optimizeSetUploadRequest.AddSet(new SetResizeImage { Name = "test3", Height = 20, Width = 20 });
+
+            var response = krakenClient.Optimize(TestData.LocalTestImage,
+                optimizeSetUploadRequest
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+        }
+
+
+        [TestMethod]
+        public void KrakenClient_ImageSetUrlCallBack_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var optimizeSetRequest = new OptimizeSetRequest(new Uri(TestData.ImageOne) , _callbackUri);
+            optimizeSetRequest.AddSet(new SetResizeImage { Name = "test1", Height = 10, Width = 10 });
+            optimizeSetRequest.AddSet(new SetResizeImage { Name = "test2", Height = 15, Width = 15 });
+            optimizeSetRequest.AddSet(new SetResizeImage { Name = "test3", Height = 20, Width = 20 });
+
+            var response = krakenClient.Optimize(
+                optimizeSetRequest
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+        }
+
+        [TestMethod]
+        public void KrakenClient_ImageSetUrlWait_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var optimizeSetWaitRequest = new OptimizeSetWaitRequest(new Uri(TestData.ImageOne));
+            optimizeSetWaitRequest.AddSet(new SetResizeImage { Name = "test1", Height = 10, Width = 10 });
+            optimizeSetWaitRequest.AddSet(new SetResizeImage { Name = "test2", Height = 15, Width = 15 });
+            optimizeSetWaitRequest.AddSet(new SetResizeImage { Name = "test3", Height = 20, Width = 20 });
+
+            var response = krakenClient.OptimizeWait(
+                optimizeSetWaitRequest
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+
+            Assert.IsTrue(result.Body.Results.Count == 3);
+
+            foreach (var item in result.Body.Results)
+            {
+                Assert.IsTrue(!string.IsNullOrEmpty(item.FileName));
+                Assert.IsTrue(item.KrakedSize > 0);
+                Assert.IsTrue(!string.IsNullOrEmpty(item.KrakedUrl));
+                Assert.IsTrue(item.OriginalSize > 0);
+                Assert.IsTrue(item.SavedBytes > 0);
+            }
+        }
+
+        [TestMethod]
+        public void KrakenClient_ImageSetUploadWait_IsTrue()
+        {
+            var krakenClient = HelperFunctions.CreateWorkingClient();
+
+            var optimizeSetUploadWaitRequest = new OptimizeSetUploadWaitRequest();
+            optimizeSetUploadWaitRequest.AddSet(new SetResizeImage { Name = "test1", Height = 10, Width = 10 });
+            optimizeSetUploadWaitRequest.AddSet(new SetResizeImage { Name = "test2", Height = 15, Width = 15 });
+            optimizeSetUploadWaitRequest.AddSet(new SetResizeImage { Name = "test3", Height = 20, Width = 20 });
+
+            var response = krakenClient.OptimizeWait(TestData.LocalTestImage,
+                optimizeSetUploadWaitRequest
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+
+            Assert.IsTrue(result.Body.Results.Count == 3);
+
+            foreach (var item in result.Body.Results)
+            {
+                Assert.IsTrue(!string.IsNullOrEmpty(item.FileName));
+                Assert.IsTrue(item.KrakedSize > 0);
+                Assert.IsTrue(!string.IsNullOrEmpty(item.KrakedUrl));
+                Assert.IsTrue(item.OriginalSize > 0);
+                Assert.IsTrue(item.SavedBytes > 0);
+            }
         }
     }
 }

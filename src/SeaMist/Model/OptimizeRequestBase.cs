@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using SeaMist.Http;
 
 namespace SeaMist.Model
 {
@@ -41,7 +40,7 @@ namespace SeaMist.Model
         internal string SamplingSchemeInternal { get; set; }
 
         [JsonProperty("auth")]
-        public Authentication Authentication { get; set; }
+        public Authentication Authentication { get; set; } = new Authentication();
 
         [JsonProperty("dev")]
         public bool Dev { get; set; }

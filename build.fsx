@@ -13,10 +13,10 @@ open Fake.AssemblyInfoFile
 let project = "SeaMist"
 let authors = ["Kevin Bronsdijk"]
 let summary = "SeaMist a .NET library for the Kraken.io REST API"
-let version = "0.1.1.7"
+let version = "0.1.1.8"
 let description = "The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Krakens features using a .NET interface."
-let notes = "Added file path support for uploads, Chroma Subsampling and crop_mode. For more information and documentation, please visit the project site on GitHub."
-let nugetVersion = "1.1.7"
+let notes = "Includes Image Sets basics. For more information and documentation, please visit the project site on GitHub."
+let nugetVersion = "1.1.8"
 let tags = "kraken.io C# API image optimization"
 let gitHome = "https://github.com/Kevin-Bronsdijk"
 let gitName = "SeaMist"

@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 using SeaMist.Model;
 
 namespace SeaMist.Http
@@ -81,21 +80,25 @@ namespace SeaMist.Http
             krakenApiRequest.Body.Authentication.ApiKey = _apiKey;
             krakenApiRequest.Body.Authentication.ApiSecret = _apiSecret;
             krakenApiRequest.Body.Dev = SandboxMode;
+            bool isSet = false;
+
+            if (krakenApiRequest.Body is IOptimizeSetWaitRequest || krakenApiRequest.Body is IOptimizeSetUploadWaitRequest)
+            {
+                isSet = true;
+            }
 
             using (var requestMessage = new HttpRequestMessage(krakenApiRequest.Method, krakenApiRequest.Uri))
             {
                 requestMessage.Content = new ObjectContent(krakenApiRequest.Body.GetType(),
                     krakenApiRequest.Body, _formatter, new MediaTypeHeaderValue("application/json"));
 
-                //var test1 = requestMessage.Content.ReadAsStringAsync();
 
                 using (
                     var responseMessage =
                         await _client.SendAsync(requestMessage, cancellationToken).ConfigureAwait(false))
                 {
-                    //var test = await responseMessage.Content.ReadAsStringAsync();
 
-                    return await BuildResponse<TResponse>(responseMessage, cancellationToken).ConfigureAwait(false);
+                    return await BuildResponse<TResponse>(responseMessage, cancellationToken, isSet).ConfigureAwait(false);
                 }
             }
         }
@@ -108,6 +111,12 @@ namespace SeaMist.Http
             krakenApiRequest.Body.Authentication.ApiKey = _apiKey;
             krakenApiRequest.Body.Authentication.ApiSecret = _apiSecret;
             krakenApiRequest.Body.Dev = SandboxMode;
+            bool isSet = false;
+
+            if (krakenApiRequest.Body is IOptimizeSetWaitRequest || krakenApiRequest.Body is IOptimizeSetUploadWaitRequest)
+            {
+                isSet = true;
+            }
 
             using (
                 var content =
@@ -121,15 +130,14 @@ namespace SeaMist.Http
 
                 using (var responseMessage = await _client.PostAsync(_krakenApiUrl + krakenApiRequest.Uri, content, cancellationToken))
                 {
-                   // var test = await responseMessage.Content.ReadAsStringAsync();
 
-                    return await BuildResponse<TResponse>(responseMessage, cancellationToken).ConfigureAwait(false);
+                    return await BuildResponse<TResponse>(responseMessage, cancellationToken, isSet).ConfigureAwait(false);
                 }
             }
         }
 
         private async Task<IApiResponse<TResponse>> BuildResponse<TResponse>(HttpResponseMessage message,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken, bool isSet)
         {
             var response = new ApiResponse<TResponse>
             {
@@ -141,10 +149,21 @@ namespace SeaMist.Http
             {
                 if (message.IsSuccessStatusCode)
                 {
-                    response.Body =
-                        await
-                            message.Content.ReadAsAsync<TResponse>(new[] {_formatter}, cancellationToken)
-                                .ConfigureAwait(false);
+                    if (isSet)
+                    {
+                        // Manual parsing required
+                        var json = await message.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                        // Dont like the link between the Model and Connection, refactor later.
+                        var optimizeSetWaitResults = ModelHelper.JsonToSet(json);
+
+                        response.Body = (TResponse)(object)optimizeSetWaitResults;
+                    }
+                    else
+                    {
+                        response.Body = await message.Content.ReadAsAsync<TResponse>(new[] { _formatter }, 
+                            cancellationToken).ConfigureAwait(false);
+                    }
                 }
                 else
                 {
