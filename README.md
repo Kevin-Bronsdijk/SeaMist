@@ -2,6 +2,14 @@ SeaMist a .NET library for the Kraken.io REST API
 =============
 [![Build status](https://ci.appveyor.com/api/projects/status/y166lwaub0596dk8?svg=true)](https://ci.appveyor.com/project/Kevin-Bronsdijk/SeaMist) [![NuGet](https://img.shields.io/nuget/v/SeaMist.svg?maxAge=2592000)](https://www.nuget.org/packages/SeaMist/)
 
+***
+### SeaMist has evolved to [kraken-net](https://github.com/Kevin-Bronsdijk/kraken-net), the official Kraken.io .Net client.
+ With the introduction of kraken-net, the development on SeaMist has been ceased. Therefore, it’s highly recommend moving to kraken-net. 
+ 
+ The upgrade is simple and the required steps can be found within the [upgrade guide](https://github.com/Kevin-Bronsdijk/kraken-net#upgrade-from-seamist).
+***
+https://github.com/Kevin-Bronsdijk/kraken-net/
+
 The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface. 
 
 * [Getting Started](#getting-started)
