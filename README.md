@@ -8,7 +8,6 @@ SeaMist a .NET library for the Kraken.io REST API
  
  The upgrade is simple and the required steps can be found within the [upgrade guide](https://github.com/Kevin-Bronsdijk/kraken-net#upgrade-from-seamist).
 ***
-https://github.com/Kevin-Bronsdijk/kraken-net/
 
 The SeaMist library interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface. 
 
